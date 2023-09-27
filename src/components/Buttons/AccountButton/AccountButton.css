@@ -1,0 +1,13 @@
+.btn-account {
+  color: #FFF;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  border-radius: 20px;
+  background: #313131;
+  border: none;
+  outline: none;
+  padding: 8px 20px;
+  cursor: pointer;
+}

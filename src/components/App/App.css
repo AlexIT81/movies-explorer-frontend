@@ -1,0 +1,78 @@
+.app {
+  width: 100%;
+  max-width: 1280px;
+  min-height: 100vh;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.main {
+  flex-grow: 1;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.text-link {
+  opacity: 1;
+  transition: .3s linear;
+}
+
+.text-link:hover {
+  opacity: .7;
+  transition: .3s linear;
+}
+
+.btn-link {
+  opacity: 1;
+  transition: .3s linear;
+}
+
+.btn-link:hover {
+  opacity: .8;
+  transition: .3s linear;
+}
+
+.section-title {
+  width: 100%;
+  max-width: 600px;
+  margin: 0;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: normal;
+  letter-spacing: -0.88px;
+}
+
+.section-title_place_portfolio {
+  width: 100%;
+  max-width: 250px;
+  color: #8B8B8B;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 20px;
+}
+
+.section-title-border {
+  width: 100%;
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: #DADADA;
+  margin-top: 23px;
+}
+
+@media (max-width: 767px) {
+  .section-title {
+    max-width: 284px;
+    font-size: 18px;
+    letter-spacing: -0.72px;
+  }
+
+  .section-title-border {
+    margin-top: 28px;
+  }
+
+  .section-title_place_portfolio {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}

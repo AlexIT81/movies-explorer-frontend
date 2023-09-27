@@ -1,0 +1,140 @@
+.login {
+  display: flex;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  align-items: center;
+  padding: 70px 0;
+}
+
+.login__wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  align-items: center;
+  gap: 40px;
+  width: 396px;
+}
+
+.login__logo {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.login__title {
+  width: 100%;
+  margin: 0;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: normal;
+  text-align: left;
+}
+
+.login__form {
+  display: flex;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.login__inputs-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+}
+
+.login__input-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.login__input-label {
+  color: #8B8B8B;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: normal;
+}
+
+.login__input {
+  box-sizing: border-box;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  padding: 15px 15px;
+  color: #fff;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: normal;
+  background: #2F2F2F;
+}
+
+.login__input::placeholder {
+  color: #fff;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.login__input:focus {
+  outline: none;
+}
+
+.login__input_place_error, .login__input_place_error:focus {
+  border: 1px #EE3465 solid;
+  color: #EE3465;
+}
+
+.login__input-error {
+  margin: 0;
+  overflow: hidden;
+  color: #EE3465;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  text-overflow: ellipsis;
+}
+
+.login__buttons-wrapper {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 16px;
+}
+
+.login__error-message {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  display: block;
+  width: 100%;
+  height: 13px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  color: #FF004C;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: normal;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.login__paragraph {
+  margin: 0;
+  color: #8B8B8B;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: normal;
+  text-align: center;
+}
+
+.login__link {
+  color: #4285F4;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: normal;
+  text-align: center;
+  text-decoration: none;
+}

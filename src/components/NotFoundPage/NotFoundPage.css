@@ -1,0 +1,71 @@
+.not-found-page {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  gap: 184px;
+  padding-top: 246px;
+}
+
+.not-found-page__title {
+  width: 100%;
+  max-width: 400px;
+  margin: 0;
+  margin-bottom: 5px;
+  color: #FFF;
+  font-weight: 400;
+  font-size: 140px;
+  line-height: normal;
+  text-align: center;
+}
+
+.not-found-page__description {
+  width: 100%;
+  max-width: 400px;
+  margin: 0;
+  color: #FFF;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: normal;
+  text-align: center;
+}
+
+.not-found-page__btn {
+  border: none;
+  outline: none;
+  color: #4285F4;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: normal;
+  text-align: center;
+  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .not-found-page {
+    gap: 184px;
+    padding-top: 408px;
+  }
+}
+
+@media (max-width: 767px) {
+  .not-found-page {
+    flex-grow: 1;
+    justify-content: space-between;
+    padding-top: 329px;
+    padding-bottom: 30px;
+    gap: 0;
+  }
+
+  .not-found-page__title {
+    max-width: 300px;
+    margin-bottom: 10px;
+    font-size: 80px;
+  }
+
+  .not-found-page__description {
+    max-width: 300px;
+    font-size: 12px;
+  }
+}
