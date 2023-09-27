@@ -1,5 +1,5 @@
 import './AboutMe.css';
-import student from '../../images/student.svg';
+import student from '../../images/student.jpg';
 
 export default function AboutMe() {
   return (
