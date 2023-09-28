@@ -76,7 +76,7 @@ export default function Login() {
             </div>
             <div className='login__buttons-wrapper'>
               <SubmitButton
-                disabled={!isFormValid}
+                // disabled={!isFormValid}
                 onSubmit={onSubmit}
                 text={'Войти'}
               />

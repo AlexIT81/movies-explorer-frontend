@@ -95,7 +95,7 @@ export default function Register() {
             </div>
             <div className='register__buttons-wrapper'>
                <SubmitButton
-                disabled={!isFormValid}
+                // disabled={!isFormValid}
                 onSubmit={onSubmit}
                 text={'Зарегистрироваться'}
               />

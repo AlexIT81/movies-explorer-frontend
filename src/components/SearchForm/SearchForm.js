@@ -33,7 +33,7 @@ export default function SearchForm({
   }
 
   return (
-    <section className='search'>
+    <div className='search'>
       <form className='search__form' name='search__form'>
         <input
           className={`search__input ${
@@ -48,12 +48,13 @@ export default function SearchForm({
           required
         ></input>
         <button
-          className={`search__button ${
-            !isFormValid ? 'search__button_disabled' : 'btn-link'
-          } `}
+          className='search__button'
+          // className={`search__button ${
+          //   !isFormValid ? 'search__button_disabled' : 'btn-link'
+          // } `}
           type='submit'
           onClick={onSubmit}
-          disabled={!isFormValid}
+          // disabled={!isFormValid}
         ></button>
         <p className='search__input-error'>{searchQueryError}</p>
       </form>
@@ -62,6 +63,6 @@ export default function SearchForm({
         isFilterCheckboxChecked={isFilterCheckboxChecked}
       />
       <hr className='search__hr'></hr>
-    </section>
+    </div>
   );
 }

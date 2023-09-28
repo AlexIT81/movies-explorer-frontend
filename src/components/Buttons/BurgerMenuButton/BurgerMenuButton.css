@@ -7,3 +7,9 @@
   background: url(../../../images/btn_burger_menu.svg) center no-repeat;
   cursor: pointer;
 }
+
+@media (max-width: 767px) {
+  .burger-menu-btn {
+    background: url(../../../images/btn_burger_menu_320.svg) center no-repeat;
+  }
+}

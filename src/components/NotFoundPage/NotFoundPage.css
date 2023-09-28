@@ -3,7 +3,7 @@
   flex-flow: column nowrap;
   align-items: center;
   gap: 184px;
-  padding-top: 246px;
+  padding: 246px 0 60px;
 }
 
 .not-found-page__title {
@@ -45,7 +45,7 @@
 @media (min-width: 768px) and (max-width: 1279px) {
   .not-found-page {
     gap: 184px;
-    padding-top: 408px;
+    padding: 408px 0 222px;
   }
 }
 
@@ -53,8 +53,7 @@
   .not-found-page {
     flex-grow: 1;
     justify-content: space-between;
-    padding-top: 329px;
-    padding-bottom: 30px;
+    padding: 329px 0 30px;
     gap: 0;
   }
 

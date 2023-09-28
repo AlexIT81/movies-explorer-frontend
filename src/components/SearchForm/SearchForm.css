@@ -24,7 +24,7 @@
 }
 
 .search__input:focus {
-  border: none;
+  border: 1px #8B8B8B solid;
   outline: none;
 }
 
@@ -81,7 +81,7 @@
   }
 
   .search__form {
-    margin-bottom: 19px;
+    margin-bottom: 7px;
   }
 }
 

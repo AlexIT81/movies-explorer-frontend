@@ -81,7 +81,7 @@ export default function Profile({ loggedIn }) {
             <div className='profile__buttons-wrapper'>
               {isEditActive ? (
                 <SubmitButton
-                  disabled={!isFormValid}
+                  // disabled={!isFormValid}
                   onSubmit={onSubmit}
                   text={'Сохранить'}
                 />

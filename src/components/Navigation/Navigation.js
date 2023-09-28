@@ -64,7 +64,9 @@ export default function Navigation({ loggedIn }) {
               isMoviePage={isMoviePage}
               isSavedMoviePage={isSavedMoviePage}
             />
-            <BtnAccount />
+            <nav>
+              <BtnAccount />
+            </nav>
           </>
         )
       ) : (
