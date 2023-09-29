@@ -1,0 +1,46 @@
+.filter-checkbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.filter-checkbox__input {
+  position: absolute; /* убрали из потока */
+  z-index: -1;
+  opacity: 0;
+}
+
+.filter-checkbox__input+label {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+}
+.filter-checkbox__input+label::before {
+  content: '';
+  display: inline-block;
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 34px;
+  height: 14px;
+  margin-right: 12px;
+  cursor: pointer;
+  background: url(../../images/filter_checkbox_false.svg) center no-repeat;
+}
+
+.filter-checkbox__input:checked+label::before {
+  background: url(../../images/filter_checkbox_true.svg) center no-repeat;
+}
+
+.filter-checkbox__name {
+  margin: 0;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .filter-checkbox__name {
+    font-size: 11px;
+  }
+}

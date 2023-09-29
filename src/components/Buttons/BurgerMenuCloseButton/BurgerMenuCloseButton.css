@@ -1,0 +1,10 @@
+.burger-menu-close-btn {
+  border: none;
+  background: url(../../../images/btn_burger_menu_close.svg) center no-repeat;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  margin-left: auto;
+}

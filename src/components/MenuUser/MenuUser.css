@@ -1,0 +1,36 @@
+.menu-user {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-left: 57px;
+}
+
+.menu-user__link {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  text-decoration: none;
+}
+
+.menu-user__link_active {
+  font-weight: 500;
+}
+
+.menu-user__mobile-link {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.menu-user__mobile-link_active {
+  padding-bottom: 6px;
+  border-bottom: 2px #fff solid;
+}
+
+
+
+
