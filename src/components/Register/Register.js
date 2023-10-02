@@ -4,7 +4,7 @@ import Logo from '../Logo/Logo';
 import { Link } from 'react-router-dom';
 import SubmitButton from '../Buttons/SubmitButton/SubmitButton';
 
-export default function Register() {
+export default function Register({ onRegister, apiError, clearApiError }) {
   const [register, setregister] = useState({
     name: '',
     email: '',
@@ -26,10 +26,12 @@ export default function Register() {
     });
 
     setIsFormValid(e.target.closest('form').checkValidity());
+    clearApiError();
   }
 
   function onSubmit(e) {
     e.preventDefault();
+    onRegister(register);
   }
 
   return (
@@ -94,8 +96,8 @@ export default function Register() {
               <p className='register__input-error'>{registerError.password}</p>
             </div>
             <div className='register__buttons-wrapper'>
-               <SubmitButton
-                // disabled={!isFormValid}
+              <SubmitButton
+                disabled={!isFormValid}
                 onSubmit={onSubmit}
                 text={'Зарегистрироваться'}
               />
@@ -105,9 +107,7 @@ export default function Register() {
                   Войти
                 </Link>
               </p>
-              <p className='register__error-message'>
-                Тут API ошибки регистрации
-              </p>
+              <p className={`register__error-message ${apiError && 'register__error-message_active'}`}>{apiError}</p>
             </div>
           </form>
         </div>

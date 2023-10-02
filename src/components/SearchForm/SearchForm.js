@@ -5,10 +5,9 @@ import { useState, useEffect } from 'react';
 
 export default function SearchForm({
   isFilterCheckboxChecked,
-  handleFilterCheckbox,
-  handleSearch
+  onFilterCheckbox,
+  onSearch
 }) {
-  const [isFormValid, setIsFormValid] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchQueryError, setSearchQueryError] = useState('');
   const location = useLocation();
@@ -23,13 +22,16 @@ export default function SearchForm({
 
   function onChange(e) {
     setSearchQuery(e.target.value);
-    setSearchQueryError(e.target.validationMessage);
-    setIsFormValid(e.target.closest('form').checkValidity());
   }
 
   function onSubmit(e) {
     e.preventDefault();
-    handleSearch(searchQuery);
+    if (searchQuery === '' || searchQuery === ' ') {
+      setSearchQueryError('Нужно ввести ключевое слово')
+    } else {
+      setSearchQueryError('');
+      onSearch(searchQuery);
+    }
   }
 
   return (
@@ -42,16 +44,13 @@ export default function SearchForm({
           type='text'
           name='search'
           placeholder='Фильм'
-          minLength='3'
+          minLength='1'
           value={searchQuery}
           onChange={onChange}
           required
         ></input>
         <button
-          className='search__button'
-          // className={`search__button ${
-          //   !isFormValid ? 'search__button_disabled' : 'btn-link'
-          // } `}
+          className='search__button btn-link'
           type='submit'
           onClick={onSubmit}
           // disabled={!isFormValid}
@@ -59,7 +58,7 @@ export default function SearchForm({
         <p className='search__input-error'>{searchQueryError}</p>
       </form>
       <FilterCheckbox
-        handleFilterCheckbox={handleFilterCheckbox}
+        onFilterCheckbox={onFilterCheckbox}
         isFilterCheckboxChecked={isFilterCheckboxChecked}
       />
       <hr className='search__hr'></hr>

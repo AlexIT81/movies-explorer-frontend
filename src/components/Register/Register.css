@@ -121,6 +121,11 @@
   line-height: normal;
   text-align: center;
   transform: translateX(-50%);
+  visibility: hidden;
+}
+
+.register__error-message_active {
+  visibility: visible;
 }
 
 .register__paragraph {

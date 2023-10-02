@@ -2,6 +2,7 @@ import SearchForm from '../SearchForm/SearchForm';
 import './SavedMovies.css';
 import { useState, useEffect } from 'react';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
+import { initialMovies } from '../../utils/constants'; // потом удалить
 
 export default function SavedMovies() {
   const [isEmptySavedMovies, setIsemptySavedMovies] = useState(true);
@@ -47,8 +48,8 @@ export default function SavedMovies() {
   return (
     <>
       <SearchForm
-        handleSearch={handleSearch}
-        handleFilterCheckbox={handleFilterCheckbox}
+        onSearch={handleSearch}
+        onFilterCheckbox={handleFilterCheckbox}
         isFilterCheckboxChecked={isFilterCheckboxChecked}
       />
       {/* {isLoading ? <Preloader /> : <MoviesCardList movies={savedMoviesArr} isEmptySavedMovies={isEmptySavedMovies} handleRemoveMovie={handleRemoveMovie} />} */}

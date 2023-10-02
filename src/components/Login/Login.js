@@ -4,7 +4,7 @@ import Logo from '../Logo/Logo';
 import { Link } from 'react-router-dom';
 import SubmitButton from '../Buttons/SubmitButton/SubmitButton';
 
-export default function Login() {
+export default function Login({ onLogin, apiError, clearApiError }) {
   const [login, setlogin] = useState({
     email: '',
     password: '',
@@ -24,10 +24,12 @@ export default function Login() {
     });
 
     setIsFormValid(e.target.closest('form').checkValidity());
+    clearApiError();
   }
 
   function onSubmit(e) {
     e.preventDefault();
+    onLogin(login);
   }
 
   return (
@@ -76,7 +78,7 @@ export default function Login() {
             </div>
             <div className='login__buttons-wrapper'>
               <SubmitButton
-                // disabled={!isFormValid}
+                disabled={!isFormValid}
                 onSubmit={onSubmit}
                 text={'Войти'}
               />
@@ -86,7 +88,7 @@ export default function Login() {
                   Регистрация
                 </Link>
               </p>
-              <p className='login__error-message'>Тут API ошибки авторизации</p>
+              <p className={`login__error-message ${apiError && 'login__error-message_active'}`}>{apiError}</p>
             </div>
           </form>
         </div>

@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Header from '../Header/Header';
 import './Profile.css';
 import SubmitButton from '../Buttons/SubmitButton/SubmitButton';
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 export default function Profile({ loggedIn }) {
   const [isEditActive, setisEditActive] = useState(false);
   const [profile, setProfile] = useState({ name: '', email: '' });
   const [profileError, setProfileError] = useState({ name: '', email: '' });
   const [isFormValid, setIsFormValid] = useState(false);
+  const currentUser = useContext(CurrentUserContext);
 
   function onChange(e) {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -81,7 +83,7 @@ export default function Profile({ loggedIn }) {
             <div className='profile__buttons-wrapper'>
               {isEditActive ? (
                 <SubmitButton
-                  // disabled={!isFormValid}
+                  disabled={!isFormValid}
                   onSubmit={onSubmit}
                   text={'Сохранить'}
                 />

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './MoviesCard.css';
+import { apiImageUrl } from '../../utils/constants';
 
 export default function MoviesCard({
   id,
@@ -8,8 +9,8 @@ export default function MoviesCard({
   title,
   duration,
   trailerLink,
-  handleSaveMovie,
-  handleRemoveMovie,
+  onSaveMovie,
+  onRemoveMovie,
 }) {
   const [isSavedMovie, setIsSavedMovie] = useState(false);
   const location = useLocation();
@@ -21,27 +22,15 @@ export default function MoviesCard({
     return `${hours}ч ${minutes}м`;
   };
 
-  const onSaveMovie = () => {
+  const handleSaveMovie = () => {
     moviePage && setIsSavedMovie(true);
-    handleSaveMovie(id);
+    onSaveMovie(id);
   };
 
-  const onRemoveMovie = (e) => {
+  const handleRemoveMovie = (e) => {
     moviePage && setIsSavedMovie(false);
-    handleRemoveMovie(id);
+    onRemoveMovie(id);
   };
-
-  useEffect(() => {
-    if (
-      localStorage.savedMovies &&
-      JSON.parse(localStorage.savedMovies).length > 0
-    ) {
-      let moviesArr = JSON.parse(localStorage.savedMovies);
-      setIsSavedMovie(moviesArr.some((item) => {
-          return item._id === id;
-        }))
-    }
-  });
 
   return (
     <li className='movies-card'>
@@ -51,7 +40,11 @@ export default function MoviesCard({
         href={trailerLink}
         rel='noreferrer'
       >
-        <img className='movies-card__image' src={thumbnail} alt={title} />
+        <img
+          className='movies-card__image'
+          src={` ${apiImageUrl}${thumbnail} `}
+          alt={title}
+        />
       </a>
       <div className='movies-card__content-wrapper'>
         <h2 className='movies-card__title'>{title}</h2>
@@ -68,9 +61,9 @@ export default function MoviesCard({
           onClick={
             moviePage
               ? isSavedMovie
-                ? onRemoveMovie
-                : onSaveMovie
-              : onRemoveMovie
+                ? handleRemoveMovie
+                : handleSaveMovie
+              : handleRemoveMovie
           }
         ></button>
       </div>
