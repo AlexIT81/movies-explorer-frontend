@@ -1,15 +1,32 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import Header from '../Header/Header';
 import './Profile.css';
 import SubmitButton from '../Buttons/SubmitButton/SubmitButton';
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
-export default function Profile({ loggedIn }) {
-  const [isEditActive, setisEditActive] = useState(false);
-  const [profile, setProfile] = useState({ name: '', email: '' });
+export default function Profile({
+  loggedIn,
+  onSignOut,
+  onEditProfile,
+  apiError,
+  clearApiError,
+  onEditActive,
+  isEditActive
+}) {
+  // const [isEditActive, setisEditActive] = useState(false);
+  const currentUser = useContext(CurrentUserContext);
+  const [profile, setProfile] = useState({
+    name: currentUser.name,
+    email: currentUser.email,
+  });
   const [profileError, setProfileError] = useState({ name: '', email: '' });
   const [isFormValid, setIsFormValid] = useState(false);
-  const currentUser = useContext(CurrentUserContext);
+  const [isButtonActive, setIsButtonActive] = useState(false);
+
+  useEffect(() => {
+    let isMatches = (currentUser.name !== profile.name) || (currentUser.email !== profile.email);
+      setIsButtonActive(isMatches);
+  }, [profile, currentUser, isFormValid]);
 
   function onChange(e) {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -20,19 +37,20 @@ export default function Profile({ loggedIn }) {
     });
 
     setIsFormValid(e.target.closest('form').checkValidity());
+    clearApiError();
   }
 
   function onEdit() {
-    setisEditActive(true);
+    onEditActive();
   }
 
   function onSubmit(e) {
     e.preventDefault();
-    setisEditActive(false);
+    onEditProfile(profile);
   }
 
-  function handleExit() {
-    console.log('logout');
+  function handleSignOut() {
+    onSignOut();
   }
 
   return (
@@ -83,7 +101,7 @@ export default function Profile({ loggedIn }) {
             <div className='profile__buttons-wrapper'>
               {isEditActive ? (
                 <SubmitButton
-                  disabled={!isFormValid}
+                  disabled={!isFormValid || !isButtonActive}
                   onSubmit={onSubmit}
                   text={'Сохранить'}
                 />
@@ -99,14 +117,18 @@ export default function Profile({ loggedIn }) {
                   <button
                     type='button'
                     className='profile__button profile__button_exit btn-link'
-                    onClick={handleExit}
+                    onClick={handleSignOut}
                   >
                     Выйти из аккаунта
                   </button>
                 </>
               )}
-              <p className='profile__error-message'>
-                Тут ошибки сохранения
+              <p
+                className={`profile__error-message ${
+                  apiError && 'profile__error-message_active'
+                }`}
+              >
+                {apiError}
               </p>
             </div>
           </form>

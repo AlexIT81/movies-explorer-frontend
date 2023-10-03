@@ -40,3 +40,14 @@ export const checkAuth = (token) => {
     },
   }).then((res) => checkRes(res));
 };
+
+export const updateUser = (name, email) => {
+  return fetch(`${apiMainUrl}/users/me`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+    },
+    body: JSON.stringify({ name, email }),
+  }).then((res) => checkRes(res));
+};

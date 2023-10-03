@@ -22,6 +22,7 @@ export default function SearchForm({
 
   function onChange(e) {
     setSearchQuery(e.target.value);
+    setSearchQueryError('');
   }
 
   function onSubmit(e) {
