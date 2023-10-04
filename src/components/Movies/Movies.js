@@ -95,7 +95,7 @@ export default function Movies() {
       .catch((err) => console.log(err));
   }
 
-  //удалить
+  //удалить фильм
   function handleRemoveMovie(movieId) {
     let removedMovie = savedMoviesArr.filter((movie) => movie.movieId === movieId)[0]
     return mainApi
@@ -118,7 +118,7 @@ export default function Movies() {
         (movie) =>
           (movie.nameRU.toLowerCase().includes(searchQuery.toLowerCase()) ||
             movie.nameEN.toLowerCase().includes(searchQuery.toLowerCase())) &&
-          movie.duration < 100
+          movie.duration <= 40
       );
       setMoviesForShow(filtered);
       localStorage.setItem('movies', JSON.stringify(filtered));
@@ -196,8 +196,6 @@ export default function Movies() {
         <Preloader />
       ) : (
         <MoviesCardList
-          searchQuery={searchQuery}
-          isFilterCheckboxChecked={isFilterCheckboxChecked}
           movies={movies}
           onSaveMovie={handleSaveMovie}
           onRemoveMovie={handleRemoveMovie}

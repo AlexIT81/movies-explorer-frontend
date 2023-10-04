@@ -1,41 +1,60 @@
 import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
-
+import { useLocation } from 'react-router-dom';
 
 export default function MoviesCardList({
   onSaveMovie,
   onRemoveMovie,
+  onRemoveSavedMovie,
   moviesForShow,
   isMoreMoviesButtonShow,
   addMoreMovies,
   quantityForShow,
   savedMoviesArr,
 }) {
+  const location = useLocation();
+  const moviePage = location.pathname === '/movies';
 
   return (
     <section className='movies-card-list'>
       {moviesForShow.toString() ? (
-        <ul className='movies-card-list__list'>
-          {moviesForShow
-            .filter((item, index) => index < quantityForShow)
-            .map((movie) => (
+        moviePage ? (
+          <ul className='movies-card-list__list'>
+            {moviesForShow
+              .filter((item, index) => index < quantityForShow)
+              .map((movie) => (
+                <MoviesCard
+                  key={movie.id}
+                  id={movie.id}
+                  thumbnail={movie.image.url}
+                  title={movie.nameRU}
+                  duration={movie.duration}
+                  trailerLink={movie.trailerLink}
+                  onSaveMovie={onSaveMovie}
+                  onRemoveMovie={onRemoveMovie}
+                  savedMoviesArr={savedMoviesArr}
+                />
+              ))}
+          </ul>
+        ) : (
+          <ul className='movies-card-list__list'>
+            {moviesForShow.map((movie) => (
               <MoviesCard
-                key={movie.id}
-                id={movie.id}
-                thumbnail={movie.image.url}
+                key={movie.id || movie._id}
+                id={movie.id || movie._id}
+                thumbnail={moviePage ? movie.image.url : movie.thumbnail}
                 title={movie.nameRU}
                 duration={movie.duration}
                 trailerLink={movie.trailerLink}
                 onSaveMovie={onSaveMovie}
-                onRemoveMovie={onRemoveMovie}
+                onRemoveMovie={moviePage ? onRemoveMovie : onRemoveSavedMovie}
                 savedMoviesArr={savedMoviesArr}
               />
             ))}
-        </ul>
+          </ul>
+        )
       ) : (
-        <h1 className='movies-card-list__empty-search'>
-          Ничего не найдено
-        </h1>
+        <h1 className='movies-card-list__empty-search'>Ничего не найдено</h1>
       )}
       {isMoreMoviesButtonShow && (
         <button
