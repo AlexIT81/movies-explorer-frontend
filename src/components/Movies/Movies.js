@@ -10,15 +10,16 @@ import {
   smallScreenData,
 } from '../../utils/constants';
 import WindowSize from '../hooks/WindowSize';
-import { useLocation } from 'react-router-dom';
+import * as mainApi from '../../utils/MainApi';
+import { apiImageUrl } from '../../utils/constants';
 
 export default function Movies() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFilterCheckboxChecked, setIsFilterCheckboxChecked] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [movies, setMovies] = useState([]);
+  const [savedMoviesArr, setSavedMoviesArr] = useState([]);
 
-  const location = useLocation();
   const windowWidth = WindowSize();
   const [moviesForShow, setMoviesForShow] = useState([]);
   const [quantityForShow, setQuantityForShow] = useState(getStartQuantity());
@@ -29,6 +30,7 @@ export default function Movies() {
     isMoreMoviesButtonActive()
   );
 
+  //достаем фильмы из ЛС для отрисовки
   useEffect(() => {
     if (localStorage.movies) {
       const savedMovies = JSON.parse(localStorage.movies);
@@ -36,8 +38,9 @@ export default function Movies() {
     }
   }, []);
 
+  //заполняем стейт фильмами со сторонненго api
   useEffect(() => {
-      setIsLoading(true);
+    setIsLoading(true);
     getMovies()
       .then((res) => {
         setMovies(res);
@@ -60,11 +63,48 @@ export default function Movies() {
     }
   }, []);
 
-  //сохранить
-  function handleSaveMovie(movieId) {}
+  // проверяем есть ли сохраненные фильмы при монтировании
+  useEffect(() => {
+    mainApi
+      .checkSavedMovies()
+      .then((res) => setSavedMoviesArr(res.data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  //сохранить фильм
+  function handleSaveMovie(movieId) {
+    let savedMovie = movies.filter((movie) => movie.id === movieId)[0];
+    savedMovie.img = apiImageUrl + savedMovie.image.url;
+    return mainApi
+      .saveMovie(
+        savedMovie.country,
+        savedMovie.director,
+        savedMovie.duration,
+        savedMovie.year,
+        savedMovie.description,
+        savedMovie.img,
+        savedMovie.trailerLink,
+        savedMovie.nameRU,
+        savedMovie.nameEN,
+        savedMovie.img,
+        savedMovie.id
+      )
+      .then((res) => {
+        setSavedMoviesArr([...savedMoviesArr, res.data]);
+      })
+      .catch((err) => console.log(err));
+  }
 
   //удалить
-  function handleRemoveMovie(movieId) {}
+  function handleRemoveMovie(movieId) {
+    let removedMovie = savedMoviesArr.filter((movie) => movie.movieId === movieId)[0]
+    return mainApi
+      .removeMovie(removedMovie._id)
+      .then((res) => {
+        setSavedMoviesArr(savedMoviesArr.filter((movie) => movie.movieId !== movieId))
+      })
+      .catch((err) => console.log(err));
+  }
 
   //клик по короткометражкам отправляем в другой компонент стейт
   function handleFilterCheckbox() {
@@ -91,14 +131,13 @@ export default function Movies() {
   function handleSearch(query) {
     localStorage.setItem('searchQuery', JSON.stringify(query));
     setSearchQuery(query.toString().trim());
-    let filteredMovies = movies.filter(
-      (movie) => {
-        return (
+    let filteredMovies = movies.filter((movie) => {
+      return (
         movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
-        movie.nameEN.toLowerCase().includes(query.toLowerCase()))
-      }
-    );
-    setMoviesForShow(filteredMovies)
+        movie.nameEN.toLowerCase().includes(query.toLowerCase())
+      );
+    });
+    setMoviesForShow(filteredMovies);
     localStorage.setItem('movies', JSON.stringify(filteredMovies));
   }
 
@@ -166,6 +205,7 @@ export default function Movies() {
           moviesForShow={moviesForShow}
           addMoreMovies={addMoreMovies}
           quantityForShow={quantityForShow}
+          savedMoviesArr={savedMoviesArr}
         />
       )}
     </>

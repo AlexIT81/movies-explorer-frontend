@@ -8,7 +8,8 @@ export default function MoviesCardList({
   moviesForShow,
   isMoreMoviesButtonShow,
   addMoreMovies,
-  quantityForShow
+  quantityForShow,
+  savedMoviesArr,
 }) {
 
   return (
@@ -27,6 +28,7 @@ export default function MoviesCardList({
                 trailerLink={movie.trailerLink}
                 onSaveMovie={onSaveMovie}
                 onRemoveMovie={onRemoveMovie}
+                savedMoviesArr={savedMoviesArr}
               />
             ))}
         </ul>

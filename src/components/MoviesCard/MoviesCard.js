@@ -11,10 +11,24 @@ export default function MoviesCard({
   trailerLink,
   onSaveMovie,
   onRemoveMovie,
+  savedMoviesArr
 }) {
   const [isSavedMovie, setIsSavedMovie] = useState(false);
   const location = useLocation();
   const moviePage = location.pathname === '/movies';
+  console.log(savedMoviesArr);
+  console.log(isSavedMovie)
+
+  //проверка фильм на сохраненный
+  useEffect(() => {
+    if (savedMoviesArr) {
+      if (savedMoviesArr.some((movie) => movie.movieId === id)) {
+        setIsSavedMovie(true);
+      } else {
+        setIsSavedMovie(false);
+      }
+    }
+  }, [savedMoviesArr])
 
   const durationFormat = () => {
     const hours = Math.floor(duration / 60);
@@ -23,12 +37,11 @@ export default function MoviesCard({
   };
 
   const handleSaveMovie = () => {
-    moviePage && setIsSavedMovie(true);
     onSaveMovie(id);
   };
 
   const handleRemoveMovie = (e) => {
-    moviePage && setIsSavedMovie(false);
+    // moviePage && setIsSavedMovie(false);
     onRemoveMovie(id);
   };
 

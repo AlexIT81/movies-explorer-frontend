@@ -20,10 +20,22 @@ export default function Register({ onRegister, apiError, clearApiError }) {
   function onChange(e) {
     setregister({ ...register, [e.target.name]: e.target.value });
 
-    setRegisterError({
-      ...registerError,
-      [e.target.name]: e.target.validationMessage,
-    });
+    if (e.target.name === 'name' && e.target.validationMessage === 'Введите данные в указанном формате.') {
+      setRegisterError({
+        ...registerError,
+        name: 'Поле содержит только латиницу, кириллицу, пробел или дефис.',
+      });
+    } else if(e.target.name === 'email' && e.target.validationMessage === 'Введите данные в указанном формате.') {
+      setRegisterError({
+        ...registerError,
+        email: 'Введите email в формате example@ya.ru',
+      });
+    } else {
+      setRegisterError({
+        ...registerError,
+        [e.target.name]: e.target.validationMessage,
+      });
+    }
 
     setIsFormValid(e.target.closest('form').checkValidity());
     clearApiError();
@@ -55,6 +67,7 @@ export default function Register({ onRegister, apiError, clearApiError }) {
                   type='text'
                   minLength='2'
                   maxLength='30'
+                  pattern={'^[а-яА-ЯёЁa-zA-Z\\s\\-]+$'}
                   value={register.name}
                   onChange={onChange}
                   required
@@ -107,7 +120,13 @@ export default function Register({ onRegister, apiError, clearApiError }) {
                   Войти
                 </Link>
               </p>
-              <p className={`register__error-message ${apiError && 'register__error-message_active'}`}>{apiError}</p>
+              <p
+                className={`register__error-message ${
+                  apiError && 'register__error-message_active'
+                }`}
+              >
+                {apiError}
+              </p>
             </div>
           </form>
         </div>

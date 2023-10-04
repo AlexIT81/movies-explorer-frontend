@@ -31,10 +31,22 @@ export default function Profile({
   function onChange(e) {
     setProfile({ ...profile, [e.target.name]: e.target.value });
 
-    setProfileError({
-      ...profileError,
-      [e.target.name]: e.target.validationMessage,
-    });
+    if (e.target.name === 'name' && e.target.validationMessage === 'Введите данные в указанном формате.') {
+      setProfileError({
+        ...profileError,
+        name: 'Поле содержит только латиницу, кириллицу, пробел или дефис.',
+      });
+    } else if(e.target.name === 'email' && e.target.validationMessage === 'Введите данные в указанном формате.') {
+      setProfileError({
+        ...profileError,
+        email: 'Введите email в формате example@ya.ru',
+      });
+    } else {
+      setProfileError({
+        ...profileError,
+        [e.target.name]: e.target.validationMessage,
+      });
+    }
 
     setIsFormValid(e.target.closest('form').checkValidity());
     clearApiError();
@@ -72,6 +84,7 @@ export default function Profile({
                   type='text'
                   minLength='2'
                   maxLength='30'
+                  pattern={'^[а-яА-ЯёЁa-zA-Z\\s\\-]+$'}
                   value={profile.name}
                   onChange={onChange}
                   disabled={!isEditActive}

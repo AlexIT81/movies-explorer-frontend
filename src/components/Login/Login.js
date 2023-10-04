@@ -18,10 +18,20 @@ export default function Login({ onLogin, apiError, clearApiError }) {
   function onChange(e) {
     setlogin({ ...login, [e.target.name]: e.target.value });
 
-    setloginError({
-      ...loginError,
-      [e.target.name]: e.target.validationMessage,
-    });
+    if (
+      e.target.name === 'email' &&
+      e.target.validationMessage === 'Введите данные в указанном формате.'
+    ) {
+      setloginError({
+        ...loginError,
+        email: 'Введите email в формате example@ya.ru',
+      });
+    } else {
+      setloginError({
+        ...loginError,
+        [e.target.name]: e.target.validationMessage,
+      });
+    }
 
     setIsFormValid(e.target.closest('form').checkValidity());
     clearApiError();
@@ -88,7 +98,13 @@ export default function Login({ onLogin, apiError, clearApiError }) {
                   Регистрация
                 </Link>
               </p>
-              <p className={`login__error-message ${apiError && 'login__error-message_active'}`}>{apiError}</p>
+              <p
+                className={`login__error-message ${
+                  apiError && 'login__error-message_active'
+                }`}
+              >
+                {apiError}
+              </p>
             </div>
           </form>
         </div>

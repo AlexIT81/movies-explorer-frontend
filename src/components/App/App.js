@@ -161,21 +161,29 @@ function App() {
           <Route
             path='register'
             element={
-              <Register
-                onRegister={onRegister}
-                apiError={apiError}
-                clearApiError={clearApiError}
-              />
+              loggedIn ? (
+                <Navigate to='/' replace />
+              ) : (
+                <Register
+                  onRegister={onRegister}
+                  apiError={apiError}
+                  clearApiError={clearApiError}
+                />
+              )
             }
           />
           <Route
             path='login'
             element={
-              <Login
-                onLogin={onLogin}
-                apiError={apiError}
-                clearApiError={clearApiError}
-              />
+              loggedIn ? (
+                <Navigate to='/' replace />
+              ) : (
+                <Login
+                  onLogin={onLogin}
+                  apiError={apiError}
+                  clearApiError={clearApiError}
+                />
+              )
             }
           />
           <Route path='*' element={<NotFoundPage />} />
