@@ -7,8 +7,6 @@ import * as mainApi from '../../utils/MainApi';
 export default function SavedMovies({ setErrorPopup }) {
   const [isEmptySavedMovies, setIsemptySavedMovies] = useState(true);
   const [savedMoviesArr, setSavedMoviesArr] = useState([]);
-  const [isFilterCheckboxChecked, setIsFilterCheckboxChecked] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [moviesForShow, setMoviesForShow] = useState([]);
 
   useEffect(() => {
@@ -24,38 +22,33 @@ export default function SavedMovies({ setErrorPopup }) {
       );
   }, []);
 
-  // поиск и короткометражки сохраненных фильмов
-  useEffect(() => {
+    useEffect(() => {
     if (savedMoviesArr.length > 0) {
       setIsemptySavedMovies(false);
     } else {
       setIsemptySavedMovies(true);
     }
+  }, [savedMoviesArr]);
 
-    if (searchQuery && isFilterCheckboxChecked) {
-      let filtered = savedMoviesArr.filter(
+  //поиск
+  function handleSearch(query, short) {
+    if (query && short) {
+      let filteredMovies = savedMoviesArr.filter(
         (movie) =>
-          (movie.nameRU.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            movie.nameEN.toLowerCase().includes(searchQuery.toLowerCase())) &&
+          (movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
+            movie.nameEN.toLowerCase().includes(query.toLowerCase())) &&
           movie.duration <= 40
       );
-      setMoviesForShow(filtered);
-    } else if (searchQuery) {
-      setSearchQuery(searchQuery.toString().trim());
-      let filteredMovies = savedMoviesArr.filter((movie) => {
-        return (
-          movie.nameRU.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          movie.nameEN.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      });
       setMoviesForShow(filteredMovies);
-    } else if (isFilterCheckboxChecked) {
-      let filtered = savedMoviesArr.filter((movie) => movie.duration <= 40);
-      setMoviesForShow(filtered);
-    } else {
-      setMoviesForShow(savedMoviesArr);
+    } else if (query) {
+      let filteredMovies = savedMoviesArr.filter(
+        (movie) =>
+          movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
+          movie.nameEN.toLowerCase().includes(query.toLowerCase())
+      );
+      setMoviesForShow(filteredMovies);
     }
-  }, [savedMoviesArr, searchQuery, isFilterCheckboxChecked]);
+  }
 
   //удаление фильма
   function handleRemoveSavedMovie(movieId) {
@@ -69,22 +62,10 @@ export default function SavedMovies({ setErrorPopup }) {
       .catch(() => setErrorPopup('Ошибка API удаления фильма из БД!'));
   }
 
-  //клик по короткометражкам
-  function handleFilterCheckbox() {
-    setIsFilterCheckboxChecked(!isFilterCheckboxChecked);
-  }
-
-  //поиск
-  function handleSearch(query) {
-    setSearchQuery(query);
-  }
-
   return (
     <>
       <SearchForm
         onSearch={handleSearch}
-        onFilterCheckbox={handleFilterCheckbox}
-        isFilterCheckboxChecked={isFilterCheckboxChecked}
       />
       <MoviesCardList
         moviesForShow={moviesForShow}

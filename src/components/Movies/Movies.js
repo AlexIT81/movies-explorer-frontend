@@ -18,7 +18,6 @@ export default function Movies({
   beatfilmApiError,
   setErrorPopup,
 }) {
-  // const [searchQuery, setSearchQuery] = useState('');
   const [savedMoviesArr, setSavedMoviesArr] = useState([]);
 
   const windowWidth = useWindowSize();
