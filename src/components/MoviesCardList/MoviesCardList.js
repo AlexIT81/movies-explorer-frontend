@@ -38,6 +38,7 @@ export default function MoviesCardList({
       {!moviesForShow.toString() &&
         !beatfilmApiError &&
         !isEmptySavedMovies && (
+          //Надпись "Ничего не найдено" присутствует на странице фильмов сразу же при входе, когда пользователь ещё ничего не искал, а не только когда ничего не найдено.
           <h1 className='movies-card-list__empty-search'>Ничего не найдено</h1>
         )}
       {!moviesForShow.toString() && beatfilmApiError && (
