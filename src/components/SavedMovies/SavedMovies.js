@@ -50,6 +50,11 @@ export default function SavedMovies({ setErrorPopup }) {
           movie.nameEN.toLowerCase().includes(query.toLowerCase())
       );
       setMoviesForShow(filteredMovies);
+    } else if (short) {
+      let filteredMovies = savedMoviesArr.filter((movie) => movie.duration <= SHORT_FILM_MAX_DURATION);
+      setMoviesForShow(filteredMovies);
+    } else {
+      setMoviesForShow(savedMoviesArr);
     }
   }
 
