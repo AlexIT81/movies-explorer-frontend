@@ -112,9 +112,9 @@ export default function Movies({
 
   // начальное количество фильмов
   function getStartQuantity() {
-    if (windowWidth < 768) {
+    if (windowWidth < MEDIUM_SCREEN_DATA.width) {
       return SMALL_SCREEN_DATA.shownQty;
-    } else if (windowWidth < 1280 && windowWidth >= 768) {
+    } else if (windowWidth < FULL_SCREEN_DATA.width && windowWidth >= MEDIUM_SCREEN_DATA.width) {
       return MEDIUM_SCREEN_DATA.shownQty;
     } else {
       return FULL_SCREEN_DATA.shownQty;
@@ -123,9 +123,9 @@ export default function Movies({
 
   // сколько показыаем дополнительно
   function getAdditionalQuantity() {
-    if (windowWidth < 768) {
+    if (windowWidth < MEDIUM_SCREEN_DATA.width) {
       return SMALL_SCREEN_DATA.addQty;
-    } else if (windowWidth < 1280 && windowWidth >= 768) {
+    } else if (windowWidth < FULL_SCREEN_DATA.width && windowWidth >= MEDIUM_SCREEN_DATA.width) {
       return MEDIUM_SCREEN_DATA.addQty;
     } else {
       return FULL_SCREEN_DATA.addQty;
