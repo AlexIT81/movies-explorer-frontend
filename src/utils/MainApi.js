@@ -1,4 +1,4 @@
-import { apiMainUrl } from './constants';
+import { API_MAIN_URL } from './constants';
 
 const checkRes = (res) => {
   if (res.ok) {
@@ -11,7 +11,7 @@ const checkRes = (res) => {
 };
 
 export const register = (name, email, password) => {
-  return fetch(`${apiMainUrl}/signup`, {
+  return fetch(`${API_MAIN_URL}/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -21,7 +21,7 @@ export const register = (name, email, password) => {
 };
 
 export const login = (email, password) => {
-  return fetch(`${apiMainUrl}/signin`, {
+  return fetch(`${API_MAIN_URL}/signin`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ export const login = (email, password) => {
 };
 
 export const checkAuth = (token) => {
-  return fetch(`${apiMainUrl}/users/me`, {
+  return fetch(`${API_MAIN_URL}/users/me`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export const checkAuth = (token) => {
 };
 
 export const updateUser = (name, email) => {
-  return fetch(`${apiMainUrl}/users/me`, {
+  return fetch(`${API_MAIN_URL}/users/me`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export const saveMovie = (
   thumbnail,
   movieId
 ) => {
-  return fetch(`${apiMainUrl}/movies`, {
+  return fetch(`${API_MAIN_URL}/movies`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ export const saveMovie = (
 };
 
 export const checkSavedMovies = () => {
-  return fetch(`${apiMainUrl}/movies`, {
+  return fetch(`${API_MAIN_URL}/movies`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ export const checkSavedMovies = () => {
 };
 
 export const removeMovie = (id) => {
-  return fetch(`${apiMainUrl}/movies/${id}`, {
+  return fetch(`${API_MAIN_URL}/movies/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

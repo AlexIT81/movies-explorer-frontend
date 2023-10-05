@@ -6,7 +6,8 @@ import { useState, useEffect } from 'react';
 export default function SearchForm({
   isFilterCheckboxChecked,
   onFilterCheckbox,
-  onSearch
+  onSearch,
+  isLoading
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchQueryError, setSearchQueryError] = useState('');
@@ -51,10 +52,10 @@ export default function SearchForm({
           required
         ></input>
         <button
-          className='search__button btn-link'
+          className={`search__button btn-link ${isLoading && 'search__button_disabled'}`}
           type='submit'
           onClick={onSubmit}
-          // disabled={!isFormValid}
+          disabled={isLoading}
         ></button>
         <p className='search__input-error'>{searchQueryError}</p>
       </form>

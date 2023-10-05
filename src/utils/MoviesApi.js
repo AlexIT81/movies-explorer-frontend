@@ -1,4 +1,4 @@
-import { apiMoviesUrl } from './constants.js';
+import { API_MOVIES_URL } from './constants.js';
 
 const checkRes = (res) => {
   if (res.ok) {
@@ -8,7 +8,7 @@ const checkRes = (res) => {
 };
 
 export const getMovies = () => {
-  return fetch(`${apiMoviesUrl}`, {
+  return fetch(`${API_MOVIES_URL}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

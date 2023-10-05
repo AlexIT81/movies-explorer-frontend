@@ -4,7 +4,7 @@ import Logo from '../Logo/Logo';
 import { Link } from 'react-router-dom';
 import SubmitButton from '../Buttons/SubmitButton/SubmitButton';
 
-export default function Register({ onRegister, apiError, clearApiError }) {
+export default function Register({ onRegister, apiError, clearApiError, isReadOnly }) {
   const [register, setregister] = useState({
     name: '',
     email: '',
@@ -70,6 +70,7 @@ export default function Register({ onRegister, apiError, clearApiError }) {
                   pattern={'^[а-яА-ЯёЁa-zA-Z\\s\\-]+$'}
                   value={register.name}
                   onChange={onChange}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
@@ -86,6 +87,7 @@ export default function Register({ onRegister, apiError, clearApiError }) {
                   pattern={'^.+@.+\\..{2,}$'}
                   value={register.email}
                   onChange={onChange}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
@@ -103,6 +105,7 @@ export default function Register({ onRegister, apiError, clearApiError }) {
                   maxLength='30'
                   value={register.password}
                   onChange={onChange}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>

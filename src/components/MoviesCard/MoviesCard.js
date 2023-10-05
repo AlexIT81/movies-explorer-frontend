@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './MoviesCard.css';
-import { apiImageUrl } from '../../utils/constants';
+import { API_IMAGE_URL } from '../../utils/constants';
 
 export default function MoviesCard({
   id,
@@ -52,7 +52,7 @@ export default function MoviesCard({
       >
         <img
           className='movies-card__image'
-          src={`${ moviePage ? apiImageUrl + thumbnail : thumbnail}`}
+          src={`${ moviePage ? API_IMAGE_URL + thumbnail : thumbnail}`}
           alt={title}
         />
       </a>

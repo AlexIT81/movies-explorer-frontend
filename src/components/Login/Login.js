@@ -4,7 +4,7 @@ import Logo from '../Logo/Logo';
 import { Link } from 'react-router-dom';
 import SubmitButton from '../Buttons/SubmitButton/SubmitButton';
 
-export default function Login({ onLogin, apiError, clearApiError }) {
+export default function Login({ onLogin, apiError, clearApiError, isReadOnly }) {
   const [login, setlogin] = useState({
     email: '',
     password: '',
@@ -64,6 +64,7 @@ export default function Login({ onLogin, apiError, clearApiError }) {
                   pattern={'^.+@.+\\..{2,}$'}
                   value={login.email}
                   onChange={onChange}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
@@ -81,6 +82,7 @@ export default function Login({ onLogin, apiError, clearApiError }) {
                   maxLength='30'
                   value={login.password}
                   onChange={onChange}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>

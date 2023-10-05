@@ -3,24 +3,22 @@ import Preloader from '../Preloader/Preloader';
 import './Movies.css';
 import { useState, useEffect } from 'react';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
-import { getMovies } from '../../utils/MoviesApi';
+// import { getMovies } from '../../utils/MoviesApi';
 import {
-  fullScreenData,
-  mediumScreenData,
-  smallScreenData,
+  FULL_SCREEN_DATA,
+  MEDIUM_SCREEN_DATA,
+  SMALL_SCREEN_DATA,
 } from '../../utils/constants';
-import WindowSize from '../hooks/WindowSize';
+import useWindowSize from '../hooks/useWindowSize';
 import * as mainApi from '../../utils/MainApi';
-import { apiImageUrl } from '../../utils/constants';
+import { API_IMAGE_URL } from '../../utils/constants';
 
-export default function Movies() {
-  const [isLoading, setIsLoading] = useState(false);
+export default function Movies({ movies, isLoading, beatfilmApiError }) {
   const [isFilterCheckboxChecked, setIsFilterCheckboxChecked] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [movies, setMovies] = useState([]);
   const [savedMoviesArr, setSavedMoviesArr] = useState([]);
 
-  const windowWidth = WindowSize();
+  const windowWidth = useWindowSize();
   const [moviesForShow, setMoviesForShow] = useState([]);
   const [quantityForShow, setQuantityForShow] = useState(getStartQuantity());
   const [additionalQuantity, setAdditionalQuantity] = useState(
@@ -36,21 +34,6 @@ export default function Movies() {
       const savedMovies = JSON.parse(localStorage.movies);
       setMoviesForShow(savedMovies);
     }
-  }, []);
-
-  //заполняем стейт фильмами со сторонненго api
-  useEffect(() => {
-    setIsLoading(true);
-    getMovies()
-      .then((res) => {
-        setMovies(res);
-      })
-      .catch((err) =>
-        console.error(
-          'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз'
-        )
-      )
-      .finally(() => setIsLoading(false));
   }, []);
 
   //при перезагрузки обновляем searchQuery если есть и короткометражки
@@ -74,7 +57,7 @@ export default function Movies() {
   //сохранить фильм
   function handleSaveMovie(movieId) {
     let savedMovie = movies.filter((movie) => movie.id === movieId)[0];
-    savedMovie.img = apiImageUrl + savedMovie.image.url;
+    savedMovie.img = API_IMAGE_URL + savedMovie.image.url;
     return mainApi
       .saveMovie(
         savedMovie.country,
@@ -97,11 +80,15 @@ export default function Movies() {
 
   //удалить фильм
   function handleRemoveMovie(movieId) {
-    let removedMovie = savedMoviesArr.filter((movie) => movie.movieId === movieId)[0]
+    let removedMovie = savedMoviesArr.filter(
+      (movie) => movie.movieId === movieId
+    )[0];
     return mainApi
       .removeMovie(removedMovie._id)
       .then((res) => {
-        setSavedMoviesArr(savedMoviesArr.filter((movie) => movie.movieId !== movieId))
+        setSavedMoviesArr(
+          savedMoviesArr.filter((movie) => movie.movieId !== movieId)
+        );
       })
       .catch((err) => console.log(err));
   }
@@ -144,22 +131,22 @@ export default function Movies() {
   // начальное количество фильмов
   function getStartQuantity() {
     if (windowWidth < 768) {
-      return smallScreenData.shownQty;
+      return SMALL_SCREEN_DATA.shownQty;
     } else if (windowWidth < 1280 && windowWidth >= 768) {
-      return mediumScreenData.shownQty;
+      return MEDIUM_SCREEN_DATA.shownQty;
     } else {
-      return fullScreenData.shownQty;
+      return FULL_SCREEN_DATA.shownQty;
     }
   }
 
   // сколько показыаем дополнительно
   function getAdditionalQuantity() {
     if (windowWidth < 768) {
-      return smallScreenData.addQty;
+      return SMALL_SCREEN_DATA.addQty;
     } else if (windowWidth < 1280 && windowWidth >= 768) {
-      return mediumScreenData.addQty;
+      return MEDIUM_SCREEN_DATA.addQty;
     } else {
-      return fullScreenData.addQty;
+      return FULL_SCREEN_DATA.addQty;
     }
   }
 
@@ -175,7 +162,7 @@ export default function Movies() {
   useEffect(() => {
     setQuantityForShow(getStartQuantity());
     setAdditionalQuantity(getAdditionalQuantity());
-  }, [windowWidth]);
+  }, [windowWidth, searchQuery]);
 
   useEffect(() => {
     if (moviesForShow.length <= quantityForShow) {
@@ -191,20 +178,30 @@ export default function Movies() {
         onSearch={handleSearch}
         onFilterCheckbox={handleFilterCheckbox}
         isFilterCheckboxChecked={isFilterCheckboxChecked}
+        isLoading={isLoading}
       />
-      {isLoading ? (
-        <Preloader />
+      {!beatfilmApiError ? (
+        isLoading ? (
+          <Preloader />
+        ) : (
+          <MoviesCardList
+            onSaveMovie={handleSaveMovie}
+            onRemoveMovie={handleRemoveMovie}
+            isMoreMoviesButtonShow={isMoreMoviesButtonShow}
+            moviesForShow={moviesForShow.filter(
+              (item, index) => index < quantityForShow
+            )}
+            addMoreMovies={addMoreMovies}
+            savedMoviesArr={savedMoviesArr}
+          />
+        )
       ) : (
-        <MoviesCardList
-          movies={movies}
-          onSaveMovie={handleSaveMovie}
-          onRemoveMovie={handleRemoveMovie}
-          isMoreMoviesButtonShow={isMoreMoviesButtonShow}
-          moviesForShow={moviesForShow}
-          addMoreMovies={addMoreMovies}
-          quantityForShow={quantityForShow}
-          savedMoviesArr={savedMoviesArr}
-        />
+        <section className='movies-card-list'>
+          <h1 className='movies-card-list__empty-search'>
+            «Во время запроса произошла ошибка. Возможно, проблема с соединением
+            или сервер недоступен. Подождите немного и попробуйте ещё раз»
+          </h1>
+        </section>
       )}
     </>
   );

@@ -53,17 +53,18 @@ export default function SavedMovies() {
     } else {
       setMoviesForShow(savedMoviesArr);
     }
-
-  }, [savedMoviesArr, searchQuery, isFilterCheckboxChecked])
+  }, [savedMoviesArr, searchQuery, isFilterCheckboxChecked]);
 
   //удаление фильма
   function handleRemoveSavedMovie(movieId) {
     return mainApi
-    .removeMovie(movieId)
-    .then((res) => {
-      setSavedMoviesArr(savedMoviesArr.filter((movie) => movie._id !== movieId))
-    })
-    .catch((err) => console.log(err));
+      .removeMovie(movieId)
+      .then((res) => {
+        setSavedMoviesArr(
+          savedMoviesArr.filter((movie) => movie._id !== movieId)
+        );
+      })
+      .catch((err) => console.log(err));
   }
 
   //клик по короткометражкам отправляем в другой компонент стейт
@@ -83,7 +84,6 @@ export default function SavedMovies() {
         onFilterCheckbox={handleFilterCheckbox}
         isFilterCheckboxChecked={isFilterCheckboxChecked}
       />
-      {/* {isLoading ? <Preloader /> : <MoviesCardList movies={savedMoviesArr} isEmptySavedMovies={isEmptySavedMovies} handleRemoveMovie={handleRemoveMovie} />} */}
       {!isEmptySavedMovies ? (
         <MoviesCardList
           moviesForShow={moviesForShow}

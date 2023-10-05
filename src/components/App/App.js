@@ -18,6 +18,7 @@ import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { useState, useEffect } from 'react';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import * as mainApi from '../../utils/MainApi';
+import { getMovies } from '../../utils/MoviesApi';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -26,6 +27,10 @@ function App() {
   const [isEditActive, setisEditActive] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [beatfilmApiError, setBeatfilmApiError] = useState(false);
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isReadOnly, setIsReadOnly] = useState(false);
 
   function isLoggedIn() {
     const jwt = localStorage.getItem('jwt');
@@ -35,6 +40,7 @@ function App() {
       return false;
     }
   }
+
   //проверяем при монтировании приложения токен
   function checkToken(token) {
     return mainApi
@@ -58,18 +64,21 @@ function App() {
 
   //регистрация
   function onRegister({ name, email, password }) {
+    setIsReadOnly(true);
     return mainApi
       .register(name, email, password)
-      .then((res) => {
+      .then(() => {
         onLogin({ email, password });
       })
       .catch((err) => {
         setApiError(err.message);
-      });
+      })
+      .finally(() => setIsReadOnly(false));
   }
 
   //логинемся
   function onLogin({ email, password }) {
+    setIsReadOnly(true);
     return mainApi
       .login(email, password)
       .then((res) => {
@@ -81,7 +90,8 @@ function App() {
       })
       .catch((err) => {
         setApiError(err.message);
-      });
+      })
+      .finally(() => setIsReadOnly(false));
   }
 
   /** Выход пользователя */
@@ -94,6 +104,7 @@ function App() {
 
   //редактирование профиля
   function onEditProfile({ name, email }) {
+    setIsReadOnly(true);
     return mainApi
       .updateUser(name, email)
       .then((res) => {
@@ -103,17 +114,33 @@ function App() {
       })
       .catch((err) => {
         setApiError(err.message);
-      });
+      })
+      .finally(() => setIsReadOnly(false));
   }
 
+  //активируем редактирование профиля
   function onEditActive() {
     setisEditActive(!isEditActive);
   }
+
+  //заполняем стейт фильмами со сторонненго api
+  useEffect(() => {
+    setIsLoading(true);
+    getMovies()
+      .then((res) => {
+        setMovies(res);
+        setBeatfilmApiError(false);
+      })
+      .catch(() => setBeatfilmApiError(true))
+      .finally(() => setIsLoading(false));
+  }, []);
 
   //очистка api ошибок
   function clearApiError() {
     setApiError('');
   }
+
+  useEffect(() => setApiError(''), [location.pathname]);
 
   return (
     <div className='app'>
@@ -131,7 +158,13 @@ function App() {
             path='movies'
             element={
               <Layout loggedIn={loggedIn}>
-                <ProtectedRoute element={Movies} loggedIn={loggedIn} />
+                <ProtectedRoute
+                  element={Movies}
+                  loggedIn={loggedIn}
+                  movies={movies}
+                  beatfilmApiError={beatfilmApiError}
+                  isLoading={isLoading}
+                />
               </Layout>
             }
           />
@@ -155,6 +188,7 @@ function App() {
                 clearApiError={clearApiError}
                 onEditActive={onEditActive}
                 isEditActive={isEditActive}
+                isReadOnly={isReadOnly}
               />
             }
           />
@@ -168,6 +202,7 @@ function App() {
                   onRegister={onRegister}
                   apiError={apiError}
                   clearApiError={clearApiError}
+                  isReadOnly={isReadOnly}
                 />
               )
             }
@@ -182,6 +217,7 @@ function App() {
                   onLogin={onLogin}
                   apiError={apiError}
                   clearApiError={clearApiError}
+                  isReadOnly={isReadOnly}
                 />
               )
             }

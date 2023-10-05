@@ -11,7 +11,8 @@ export default function Profile({
   apiError,
   clearApiError,
   onEditActive,
-  isEditActive
+  isEditActive,
+  isReadOnly
 }) {
   // const [isEditActive, setisEditActive] = useState(false);
   const currentUser = useContext(CurrentUserContext);
@@ -24,19 +25,26 @@ export default function Profile({
   const [isButtonActive, setIsButtonActive] = useState(false);
 
   useEffect(() => {
-    let isMatches = (currentUser.name !== profile.name) || (currentUser.email !== profile.email);
-      setIsButtonActive(isMatches);
+    let isMatches =
+      currentUser.name !== profile.name || currentUser.email !== profile.email;
+    setIsButtonActive(isMatches);
   }, [profile, currentUser, isFormValid]);
 
   function onChange(e) {
     setProfile({ ...profile, [e.target.name]: e.target.value });
 
-    if (e.target.name === 'name' && e.target.validationMessage === 'Введите данные в указанном формате.') {
+    if (
+      e.target.name === 'name' &&
+      e.target.validationMessage === 'Введите данные в указанном формате.'
+    ) {
       setProfileError({
         ...profileError,
         name: 'Поле содержит только латиницу, кириллицу, пробел или дефис.',
       });
-    } else if(e.target.name === 'email' && e.target.validationMessage === 'Введите данные в указанном формате.') {
+    } else if (
+      e.target.name === 'email' &&
+      e.target.validationMessage === 'Введите данные в указанном формате.'
+    ) {
       setProfileError({
         ...profileError,
         email: 'Введите email в формате example@ya.ru',
@@ -88,6 +96,7 @@ export default function Profile({
                   value={profile.name}
                   onChange={onChange}
                   disabled={!isEditActive}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
@@ -106,6 +115,7 @@ export default function Profile({
                   value={profile.email}
                   onChange={onChange}
                   disabled={!isEditActive}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
