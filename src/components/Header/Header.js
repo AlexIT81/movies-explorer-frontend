@@ -6,7 +6,7 @@ export default function Header({ loggedIn }) {
   return (
     <header className='header'>
       <Logo />
-      <Navigation loggedIn={loggedIn}  />
+      <Navigation loggedIn={loggedIn} />
     </header>
   );
 }

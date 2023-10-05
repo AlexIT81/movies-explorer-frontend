@@ -6,12 +6,22 @@ export default function MenuUser({ isMoviePage, isSavedMoviePage }) {
     <nav>
       <ul className='menu-user'>
         <li className='menu-user__item'>
-          <Link className={`menu-user__link ${isMoviePage && 'menu-user__link_active'} text-link`} to='/movies'>
+          <Link
+            className={`menu-user__link ${
+              isMoviePage && 'menu-user__link_active'
+            } text-link`}
+            to='/movies'
+          >
             Фильмы
           </Link>
         </li>
         <li className='menu-user__item'>
-          <Link className={`menu-user__link ${isSavedMoviePage && 'menu-user__link_active'} text-link`} to='/savedmovies'>
+          <Link
+            className={`menu-user__link ${
+              isSavedMoviePage && 'menu-user__link_active'
+            } text-link`}
+            to='/savedmovies'
+          >
             Сохранённые фильмы
           </Link>
         </li>

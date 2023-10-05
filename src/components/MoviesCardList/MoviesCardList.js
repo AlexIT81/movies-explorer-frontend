@@ -10,13 +10,15 @@ export default function MoviesCardList({
   isMoreMoviesButtonShow,
   addMoreMovies,
   savedMoviesArr,
+  beatfilmApiError,
+  isEmptySavedMovies,
 }) {
   const location = useLocation();
   const moviePage = location.pathname === '/movies';
 
   return (
     <section className='movies-card-list'>
-      {moviesForShow.toString() ? (
+      {moviesForShow.toString() && (
         <ul className='movies-card-list__list'>
           {moviesForShow.map((movie) => (
             <MoviesCard
@@ -32,8 +34,22 @@ export default function MoviesCardList({
             />
           ))}
         </ul>
-      ) : (
-        <h1 className='movies-card-list__empty-search'>Ничего не найдено</h1>
+      )}
+      {!moviesForShow.toString() &&
+        !beatfilmApiError &&
+        !isEmptySavedMovies && (
+          <h1 className='movies-card-list__empty-search'>Ничего не найдено</h1>
+        )}
+      {!moviesForShow.toString() && beatfilmApiError && (
+        <h1 className='movies-card-list__empty-search'>
+          «Во время запроса произошла ошибка. Возможно, проблема с соединением
+          или сервер недоступен. Подождите немного и попробуйте ещё раз»
+        </h1>
+      )}
+      {!moviesForShow.toString() && !beatfilmApiError && isEmptySavedMovies && (
+        <h1 className='movies-card-list__empty-search'>
+          Нету сохраненных фильмов!
+        </h1>
       )}
       {isMoreMoviesButtonShow && (
         <button

@@ -52,7 +52,7 @@ export default function MoviesCard({
       >
         <img
           className='movies-card__image'
-          src={`${ moviePage ? API_IMAGE_URL + thumbnail : thumbnail}`}
+          src={`${moviePage ? API_IMAGE_URL + thumbnail : thumbnail}`}
           alt={title}
         />
       </a>

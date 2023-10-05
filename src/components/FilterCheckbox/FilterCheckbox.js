@@ -1,7 +1,9 @@
 import './FilterCheckbox.css';
 
-export default function FilterCheckbox({ isFilterCheckboxChecked, onFilterCheckbox }) {
-
+export default function FilterCheckbox({
+  isFilterCheckboxChecked,
+  onFilterCheckbox,
+}) {
   function onChange() {
     onFilterCheckbox();
   }

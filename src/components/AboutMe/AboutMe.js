@@ -5,7 +5,7 @@ export default function AboutMe() {
   return (
     <section className='about-me' id={'about-me'}>
       <h2 className='about-me__title section-title'>Студент</h2>
-      <hr className='about-me__title-hr section-title-border'/>
+      <hr className='about-me__title-hr section-title-border' />
       <div className='about-me__content-wrapper'>
         <div className='about-me__content-column-wrapper'>
           <article className='about-me__article'>
@@ -21,7 +21,14 @@ export default function AboutMe() {
               заниматься фриланс-заказами и ушёл с постоянной работы.
             </p>
           </article>
-          <a className='about-me__article-link text-link' target='_blank' href='https://github.com/AlexIT81' rel='noreferrer'>Github</a>
+          <a
+            className='about-me__article-link text-link'
+            target='_blank'
+            href='https://github.com/AlexIT81'
+            rel='noreferrer'
+          >
+            Github
+          </a>
         </div>
         <img
           className='about-me__content-img'

@@ -12,7 +12,7 @@ export default function useWindowSize() {
       return () => {
         clearTimeout(timer);
       };
-    }
+    };
     window.addEventListener('resize', updateSize);
     return () => {
       window.removeEventListener('resize', updateSize);

@@ -4,7 +4,12 @@ import Logo from '../Logo/Logo';
 import { Link } from 'react-router-dom';
 import SubmitButton from '../Buttons/SubmitButton/SubmitButton';
 
-export default function Register({ onRegister, apiError, clearApiError, isReadOnly }) {
+export default function Register({
+  onRegister,
+  apiError,
+  clearApiError,
+  isReadOnly,
+}) {
   const [register, setregister] = useState({
     name: '',
     email: '',
@@ -20,12 +25,18 @@ export default function Register({ onRegister, apiError, clearApiError, isReadOn
   function onChange(e) {
     setregister({ ...register, [e.target.name]: e.target.value });
 
-    if (e.target.name === 'name' && e.target.validationMessage === 'Введите данные в указанном формате.') {
+    if (
+      e.target.name === 'name' &&
+      e.target.validationMessage === 'Введите данные в указанном формате.'
+    ) {
       setRegisterError({
         ...registerError,
         name: 'Поле содержит только латиницу, кириллицу, пробел или дефис.',
       });
-    } else if(e.target.name === 'email' && e.target.validationMessage === 'Введите данные в указанном формате.') {
+    } else if (
+      e.target.name === 'email' &&
+      e.target.validationMessage === 'Введите данные в указанном формате.'
+    ) {
       setRegisterError({
         ...registerError,
         email: 'Введите email в формате example@ya.ru',
@@ -113,7 +124,7 @@ export default function Register({ onRegister, apiError, clearApiError, isReadOn
             </div>
             <div className='register__buttons-wrapper'>
               <SubmitButton
-                disabled={!isFormValid}
+                disabled={!isFormValid || isReadOnly}
                 onSubmit={onSubmit}
                 text={'Зарегистрироваться'}
               />

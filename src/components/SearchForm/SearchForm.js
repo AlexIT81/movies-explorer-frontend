@@ -7,7 +7,7 @@ export default function SearchForm({
   isFilterCheckboxChecked,
   onFilterCheckbox,
   onSearch,
-  isLoading
+  isLoading,
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchQueryError, setSearchQueryError] = useState('');
@@ -29,7 +29,7 @@ export default function SearchForm({
   function onSubmit(e) {
     e.preventDefault();
     if (searchQuery === '' || searchQuery === ' ') {
-      setSearchQueryError('Нужно ввести ключевое слово')
+      setSearchQueryError('Нужно ввести ключевое слово');
     } else {
       setSearchQueryError('');
       onSearch(searchQuery);
@@ -49,10 +49,13 @@ export default function SearchForm({
           minLength='1'
           value={searchQuery}
           onChange={onChange}
+          readOnly={isLoading}
           required
         ></input>
         <button
-          className={`search__button btn-link ${isLoading && 'search__button_disabled'}`}
+          className={`search__button btn-link ${
+            isLoading && 'search__button_disabled'
+          }`}
           type='submit'
           onClick={onSubmit}
           disabled={isLoading}

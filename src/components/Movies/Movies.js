@@ -3,7 +3,6 @@ import Preloader from '../Preloader/Preloader';
 import './Movies.css';
 import { useState, useEffect } from 'react';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
-// import { getMovies } from '../../utils/MoviesApi';
 import {
   FULL_SCREEN_DATA,
   MEDIUM_SCREEN_DATA,
@@ -13,7 +12,12 @@ import useWindowSize from '../hooks/useWindowSize';
 import * as mainApi from '../../utils/MainApi';
 import { API_IMAGE_URL } from '../../utils/constants';
 
-export default function Movies({ movies, isLoading, beatfilmApiError, setErrorPopup }) {
+export default function Movies({
+  movies,
+  isLoading,
+  beatfilmApiError,
+  setErrorPopup,
+}) {
   const [isFilterCheckboxChecked, setIsFilterCheckboxChecked] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [savedMoviesArr, setSavedMoviesArr] = useState([]);
@@ -180,28 +184,20 @@ export default function Movies({ movies, isLoading, beatfilmApiError, setErrorPo
         isFilterCheckboxChecked={isFilterCheckboxChecked}
         isLoading={isLoading}
       />
-      {!beatfilmApiError ? (
-        isLoading ? (
-          <Preloader />
-        ) : (
-          <MoviesCardList
-            onSaveMovie={handleSaveMovie}
-            onRemoveMovie={handleRemoveMovie}
-            isMoreMoviesButtonShow={isMoreMoviesButtonShow}
-            moviesForShow={moviesForShow.filter(
-              (item, index) => index < quantityForShow
-            )}
-            addMoreMovies={addMoreMovies}
-            savedMoviesArr={savedMoviesArr}
-          />
-        )
+      {isLoading ? (
+        <Preloader />
       ) : (
-        <section className='movies-card-list'>
-          <h1 className='movies-card-list__empty-search'>
-            «Во время запроса произошла ошибка. Возможно, проблема с соединением
-            или сервер недоступен. Подождите немного и попробуйте ещё раз»
-          </h1>
-        </section>
+        <MoviesCardList
+          onSaveMovie={handleSaveMovie}
+          onRemoveMovie={handleRemoveMovie}
+          isMoreMoviesButtonShow={isMoreMoviesButtonShow}
+          moviesForShow={moviesForShow.filter(
+            (item, index) => index < quantityForShow
+          )}
+          addMoreMovies={addMoreMovies}
+          savedMoviesArr={savedMoviesArr}
+          beatfilmApiError={beatfilmApiError}
+        />
       )}
     </>
   );

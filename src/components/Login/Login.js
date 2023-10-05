@@ -4,7 +4,12 @@ import Logo from '../Logo/Logo';
 import { Link } from 'react-router-dom';
 import SubmitButton from '../Buttons/SubmitButton/SubmitButton';
 
-export default function Login({ onLogin, apiError, clearApiError, isReadOnly }) {
+export default function Login({
+  onLogin,
+  apiError,
+  clearApiError,
+  isReadOnly,
+}) {
   const [login, setlogin] = useState({
     email: '',
     password: '',
@@ -90,7 +95,7 @@ export default function Login({ onLogin, apiError, clearApiError, isReadOnly }) 
             </div>
             <div className='login__buttons-wrapper'>
               <SubmitButton
-                disabled={!isFormValid}
+                disabled={!isFormValid || isReadOnly}
                 onSubmit={onSubmit}
                 text={'Войти'}
               />

@@ -19,7 +19,9 @@ export default function SavedMovies({ setErrorPopup }) {
         setMoviesForShow(res.data);
         setIsemptySavedMovies(false);
       })
-      .catch(() => setErrorPopup('Ошибка API получения сохраненных фильмов из БД!'));
+      .catch(() =>
+        setErrorPopup('Ошибка API получения сохраненных фильмов из БД!')
+      );
   }, []);
 
   // поиск и короткометражки сохраненных фильмов
@@ -84,18 +86,11 @@ export default function SavedMovies({ setErrorPopup }) {
         onFilterCheckbox={handleFilterCheckbox}
         isFilterCheckboxChecked={isFilterCheckboxChecked}
       />
-      {!isEmptySavedMovies ? (
-        <MoviesCardList
-          moviesForShow={moviesForShow}
-          onRemoveSavedMovie={handleRemoveSavedMovie}
-        />
-      ) : (
-        <section className='movies-card-list'>
-          <h1 className='movies-card-list__empty-search'>
-            Нету сохраненных фильмов!
-          </h1>
-        </section>
-      )}
+      <MoviesCardList
+        moviesForShow={moviesForShow}
+        onRemoveSavedMovie={handleRemoveSavedMovie}
+        isEmptySavedMovies={isEmptySavedMovies}
+      />
     </>
   );
 }

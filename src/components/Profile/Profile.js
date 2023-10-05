@@ -12,7 +12,7 @@ export default function Profile({
   clearApiError,
   onEditActive,
   isEditActive,
-  isReadOnly
+  isReadOnly,
 }) {
   // const [isEditActive, setisEditActive] = useState(false);
   const currentUser = useContext(CurrentUserContext);
@@ -124,7 +124,7 @@ export default function Profile({
             <div className='profile__buttons-wrapper'>
               {isEditActive ? (
                 <SubmitButton
-                  disabled={!isFormValid || !isButtonActive}
+                  disabled={!isFormValid || !isButtonActive || isReadOnly}
                   onSubmit={onSubmit}
                   text={'Сохранить'}
                 />
