@@ -14,15 +14,18 @@ export default function Profile({
   isEditActive,
   isReadOnly,
 }) {
-  // const [isEditActive, setisEditActive] = useState(false);
   const currentUser = useContext(CurrentUserContext);
-  const [profile, setProfile] = useState({
-    name: currentUser.name,
-    email: currentUser.email,
-  });
+  const [profile, setProfile] = useState({ name: '', email: '' });
   const [profileError, setProfileError] = useState({ name: '', email: '' });
   const [isFormValid, setIsFormValid] = useState(false);
   const [isButtonActive, setIsButtonActive] = useState(false);
+
+  useEffect(() => {
+    setProfile({
+      name: currentUser.name,
+      email: currentUser.email,
+    });
+  }, [currentUser]);
 
   useEffect(() => {
     let isMatches =
@@ -93,7 +96,7 @@ export default function Profile({
                   minLength='2'
                   maxLength='30'
                   pattern={'^[а-яА-ЯёЁa-zA-Z\\s\\-]+$'}
-                  value={profile.name}
+                  value={profile.name || ''}
                   onChange={onChange}
                   disabled={!isEditActive}
                   readOnly={isReadOnly}
@@ -112,7 +115,7 @@ export default function Profile({
                   name='email'
                   type='email'
                   pattern={'^.+@.+\\..{2,}$'}
-                  value={profile.email}
+                  value={profile.email || ''}
                   onChange={onChange}
                   disabled={!isEditActive}
                   readOnly={isReadOnly}
