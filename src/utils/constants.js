@@ -1,7 +1,6 @@
 const API_MOVIES_URL = 'https://api.nomoreparties.co/beatfilm-movies';
 const API_IMAGE_URL = 'https://api.nomoreparties.co';
-// const API_MAIN_URL = 'https://api.movies.studioit.online';
-const API_MAIN_URL = 'http://localhost:3001';
+const API_MAIN_URL = 'https://api.movies.studioit.online';
 
 const FULL_SCREEN_DATA = { shownQty: 12, addQty: 3 };
 const MEDIUM_SCREEN_DATA = { shownQty: 8, addQty: 2 };
