@@ -18,8 +18,7 @@ export default function Movies({
   beatfilmApiError,
   setErrorPopup,
 }) {
-  const [isFilterCheckboxChecked, setIsFilterCheckboxChecked] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  // const [searchQuery, setSearchQuery] = useState('');
   const [savedMoviesArr, setSavedMoviesArr] = useState([]);
 
   const windowWidth = useWindowSize();
@@ -37,16 +36,6 @@ export default function Movies({
     if (localStorage.movies) {
       const savedMovies = JSON.parse(localStorage.movies);
       setMoviesForShow(savedMovies);
-    }
-  }, []);
-
-  //при перезагрузки обновляем searchQuery если есть и короткометражки
-  useEffect(() => {
-    if (localStorage.searchQuery) {
-      setSearchQuery(JSON.parse(localStorage.searchQuery));
-    }
-    if (localStorage.shortMovies) {
-      setIsFilterCheckboxChecked(JSON.parse(localStorage.shortMovies));
     }
   }, []);
 
@@ -97,39 +86,28 @@ export default function Movies({
       .catch(() => setErrorPopup('Ошибка API удаления фильма из БД!'));
   }
 
-  //клик по короткометражкам
-  function handleFilterCheckbox() {
-    localStorage.setItem(
-      'shortMovies',
-      JSON.stringify(!isFilterCheckboxChecked)
-    );
-    setIsFilterCheckboxChecked(!isFilterCheckboxChecked);
-    if (!isFilterCheckboxChecked) {
-      let filtered = movies.filter(
+  //поиск
+  function handleSearch(query, short) {
+    if (query && short) {
+      let filteredMovies = movies.filter(
         (movie) =>
-          (movie.nameRU.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            movie.nameEN.toLowerCase().includes(searchQuery.toLowerCase())) &&
+          (movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
+            movie.nameEN.toLowerCase().includes(query.toLowerCase())) &&
           movie.duration <= 40
       );
-      setMoviesForShow(filtered);
-      localStorage.setItem('movies', JSON.stringify(filtered));
-    } else {
-      handleSearch(searchQuery);
-    }
-  }
-
-  //поиск
-  function handleSearch(query) {
-    localStorage.setItem('searchQuery', JSON.stringify(query.toString()));
-    setSearchQuery(query.toString());
-    let filteredMovies = movies.filter((movie) => {
-      return (
-        movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
-        movie.nameEN.toLowerCase().includes(query.toLowerCase())
+      setMoviesForShow(filteredMovies);
+      localStorage.setItem('movies', JSON.stringify(filteredMovies));
+    } else if (query) {
+      let filteredMovies = movies.filter(
+        (movie) =>
+          movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
+          movie.nameEN.toLowerCase().includes(query.toLowerCase())
       );
-    });
-    setMoviesForShow(filteredMovies);
-    localStorage.setItem('movies', JSON.stringify(filteredMovies));
+      setMoviesForShow(filteredMovies);
+      localStorage.setItem('movies', JSON.stringify(filteredMovies));
+    }
+    localStorage.setItem('searchQuery', JSON.stringify(query.toString()));
+    localStorage.setItem('shortMovies', JSON.stringify(short));
   }
 
   // начальное количество фильмов
@@ -166,7 +144,7 @@ export default function Movies({
   useEffect(() => {
     setQuantityForShow(getStartQuantity());
     setAdditionalQuantity(getAdditionalQuantity());
-  }, [windowWidth, searchQuery]);
+  }, [windowWidth]);
 
   useEffect(() => {
     if (moviesForShow.length <= quantityForShow) {
@@ -180,8 +158,6 @@ export default function Movies({
     <>
       <SearchForm
         onSearch={handleSearch}
-        onFilterCheckbox={handleFilterCheckbox}
-        isFilterCheckboxChecked={isFilterCheckboxChecked}
         isLoading={isLoading}
       />
       {isLoading ? (
