@@ -15,6 +15,7 @@ import Register from '../Register/Register';
 import Login from '../Login/Login';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import ErrorPopup from '../ErrorPopup/ErrorPopup';
 import { useState, useEffect } from 'react';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import * as mainApi from '../../utils/MainApi';
@@ -31,6 +32,9 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
+  //попап
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   function isLoggedIn() {
     const jwt = localStorage.getItem('jwt');
@@ -51,7 +55,7 @@ function App() {
       })
       .catch((err) => {
         onSignOut();
-        console.error(err);
+        setErrorPopup('Ошибка API проверки токена!');
       });
   }
 
@@ -142,6 +146,17 @@ function App() {
 
   useEffect(() => setApiError(''), [location.pathname]);
 
+  //попап
+  function handleClosePopup() {
+    setIsPopupOpen(false);
+    setErrorMessage('');
+  }
+
+  function setErrorPopup(errorMessage) {
+    setIsPopupOpen(true);
+    setErrorMessage(errorMessage);
+  }
+
   return (
     <div className='app'>
       <CurrentUserContext.Provider value={currentUser}>
@@ -164,6 +179,7 @@ function App() {
                   movies={movies}
                   beatfilmApiError={beatfilmApiError}
                   isLoading={isLoading}
+                  setErrorPopup={setErrorPopup}
                 />
               </Layout>
             }
@@ -172,7 +188,11 @@ function App() {
             path='savedmovies'
             element={
               <Layout loggedIn={loggedIn}>
-                <ProtectedRoute element={SavedMovies} loggedIn={loggedIn} />
+                <ProtectedRoute
+                  element={SavedMovies}
+                  loggedIn={loggedIn}
+                  setErrorPopup={setErrorPopup}
+                />
               </Layout>
             }
           />
@@ -225,6 +245,11 @@ function App() {
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </CurrentUserContext.Provider>
+      <ErrorPopup
+        isOpen={isPopupOpen}
+        errorMessage={errorMessage}
+        onClose={handleClosePopup}
+      />
     </div>
   );
 }

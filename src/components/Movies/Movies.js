@@ -13,7 +13,7 @@ import useWindowSize from '../hooks/useWindowSize';
 import * as mainApi from '../../utils/MainApi';
 import { API_IMAGE_URL } from '../../utils/constants';
 
-export default function Movies({ movies, isLoading, beatfilmApiError }) {
+export default function Movies({ movies, isLoading, beatfilmApiError, setErrorPopup }) {
   const [isFilterCheckboxChecked, setIsFilterCheckboxChecked] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [savedMoviesArr, setSavedMoviesArr] = useState([]);
@@ -51,7 +51,7 @@ export default function Movies({ movies, isLoading, beatfilmApiError }) {
     mainApi
       .checkSavedMovies()
       .then((res) => setSavedMoviesArr(res.data))
-      .catch((err) => console.error(err));
+      .catch(() => setErrorPopup('Ошибка API получения фильмов из БД!'));
   }, []);
 
   //сохранить фильм
@@ -75,7 +75,7 @@ export default function Movies({ movies, isLoading, beatfilmApiError }) {
       .then((res) => {
         setSavedMoviesArr([...savedMoviesArr, res.data]);
       })
-      .catch((err) => console.log(err));
+      .catch(() => setErrorPopup('Ошибка API сохранения фильма в БД!'));
   }
 
   //удалить фильм
@@ -90,10 +90,10 @@ export default function Movies({ movies, isLoading, beatfilmApiError }) {
           savedMoviesArr.filter((movie) => movie.movieId !== movieId)
         );
       })
-      .catch((err) => console.log(err));
+      .catch(() => setErrorPopup('Ошибка API удаления фильма из БД!'));
   }
 
-  //клик по короткометражкам отправляем в другой компонент стейт
+  //клик по короткометражкам
   function handleFilterCheckbox() {
     localStorage.setItem(
       'shortMovies',
@@ -116,8 +116,8 @@ export default function Movies({ movies, isLoading, beatfilmApiError }) {
 
   //поиск
   function handleSearch(query) {
-    localStorage.setItem('searchQuery', JSON.stringify(query));
-    setSearchQuery(query.toString().trim());
+    localStorage.setItem('searchQuery', JSON.stringify(query.toString()));
+    setSearchQuery(query.toString());
     let filteredMovies = movies.filter((movie) => {
       return (
         movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||

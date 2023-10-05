@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import * as mainApi from '../../utils/MainApi';
 
-export default function SavedMovies() {
+export default function SavedMovies({ setErrorPopup }) {
   const [isEmptySavedMovies, setIsemptySavedMovies] = useState(true);
   const [savedMoviesArr, setSavedMoviesArr] = useState([]);
   const [isFilterCheckboxChecked, setIsFilterCheckboxChecked] = useState(false);
@@ -19,7 +19,7 @@ export default function SavedMovies() {
         setMoviesForShow(res.data);
         setIsemptySavedMovies(false);
       })
-      .catch((err) => console.error(err));
+      .catch(() => setErrorPopup('Ошибка API получения сохраненных фильмов из БД!'));
   }, []);
 
   // поиск и короткометражки сохраненных фильмов
@@ -64,10 +64,10 @@ export default function SavedMovies() {
           savedMoviesArr.filter((movie) => movie._id !== movieId)
         );
       })
-      .catch((err) => console.log(err));
+      .catch(() => setErrorPopup('Ошибка API удаления фильма из БД!'));
   }
 
-  //клик по короткометражкам отправляем в другой компонент стейт
+  //клик по короткометражкам
   function handleFilterCheckbox() {
     setIsFilterCheckboxChecked(!isFilterCheckboxChecked);
   }
