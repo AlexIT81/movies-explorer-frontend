@@ -3,6 +3,7 @@ import './SavedMovies.css';
 import { useState, useEffect } from 'react';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import * as mainApi from '../../utils/MainApi';
+import { SHORT_FILM_MAX_DURATION } from '../../utils/constants';
 
 export default function SavedMovies({ setErrorPopup }) {
   const [isEmptySavedMovies, setIsemptySavedMovies] = useState(true);
@@ -22,12 +23,14 @@ export default function SavedMovies({ setErrorPopup }) {
       );
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     if (savedMoviesArr.length > 0) {
       setIsemptySavedMovies(false);
     } else {
       setIsemptySavedMovies(true);
     }
+
+    setMoviesForShow(savedMoviesArr);
   }, [savedMoviesArr]);
 
   //поиск
@@ -37,7 +40,7 @@ export default function SavedMovies({ setErrorPopup }) {
         (movie) =>
           (movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
             movie.nameEN.toLowerCase().includes(query.toLowerCase())) &&
-          movie.duration <= 40
+          movie.duration <= SHORT_FILM_MAX_DURATION
       );
       setMoviesForShow(filteredMovies);
     } else if (query) {
@@ -64,9 +67,7 @@ export default function SavedMovies({ setErrorPopup }) {
 
   return (
     <>
-      <SearchForm
-        onSearch={handleSearch}
-      />
+      <SearchForm onSearch={handleSearch} />
       <MoviesCardList
         moviesForShow={moviesForShow}
         onRemoveSavedMovie={handleRemoveSavedMovie}

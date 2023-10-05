@@ -7,6 +7,7 @@ import {
   FULL_SCREEN_DATA,
   MEDIUM_SCREEN_DATA,
   SMALL_SCREEN_DATA,
+  SHORT_FILM_MAX_DURATION
 } from '../../utils/constants';
 import useWindowSize from '../hooks/useWindowSize';
 import * as mainApi from '../../utils/MainApi';
@@ -92,7 +93,7 @@ export default function Movies({
         (movie) =>
           (movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
             movie.nameEN.toLowerCase().includes(query.toLowerCase())) &&
-          movie.duration <= 40
+          movie.duration <= SHORT_FILM_MAX_DURATION
       );
       setMoviesForShow(filteredMovies);
       localStorage.setItem('movies', JSON.stringify(filteredMovies));
