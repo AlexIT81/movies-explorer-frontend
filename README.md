@@ -6,6 +6,9 @@
 
 [Ссылка на Backend](https://api.movies.studioit.online/).
 
+[Ссылка на Pull Request](https://github.com/AlexIT81/movies-explorer-frontend/pull/2).
+
+
 ## Стек технологий
 * HTML
 * CSS
