@@ -102,6 +102,14 @@ function App() {
   function onSignOut() {
     setLoggedIn(false);
     setCurrentUser('');
+    setApiError('');
+    setBeatfilmApiError(false);
+    setMovies([]);
+    setIsLoading(false);
+    setIsReadOnly(false);
+    setIsPopupOpen(false);
+    setErrorMessage('');
+    setisEditActive(false);
     localStorage.clear();
     navigate('/');
   }
