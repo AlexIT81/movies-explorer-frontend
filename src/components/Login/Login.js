@@ -4,7 +4,12 @@ import Logo from '../Logo/Logo';
 import { Link } from 'react-router-dom';
 import SubmitButton from '../Buttons/SubmitButton/SubmitButton';
 
-export default function Login() {
+export default function Login({
+  onLogin,
+  apiError,
+  clearApiError,
+  isReadOnly,
+}) {
   const [login, setlogin] = useState({
     email: '',
     password: '',
@@ -18,16 +23,28 @@ export default function Login() {
   function onChange(e) {
     setlogin({ ...login, [e.target.name]: e.target.value });
 
-    setloginError({
-      ...loginError,
-      [e.target.name]: e.target.validationMessage,
-    });
+    if (
+      e.target.name === 'email' &&
+      e.target.validationMessage === 'Введите данные в указанном формате.'
+    ) {
+      setloginError({
+        ...loginError,
+        email: 'Введите email в формате example@ya.ru',
+      });
+    } else {
+      setloginError({
+        ...loginError,
+        [e.target.name]: e.target.validationMessage,
+      });
+    }
 
     setIsFormValid(e.target.closest('form').checkValidity());
+    clearApiError();
   }
 
   function onSubmit(e) {
     e.preventDefault();
+    onLogin(login);
   }
 
   return (
@@ -52,6 +69,7 @@ export default function Login() {
                   pattern={'^.+@.+\\..{2,}$'}
                   value={login.email}
                   onChange={onChange}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
@@ -69,6 +87,7 @@ export default function Login() {
                   maxLength='30'
                   value={login.password}
                   onChange={onChange}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
@@ -76,7 +95,7 @@ export default function Login() {
             </div>
             <div className='login__buttons-wrapper'>
               <SubmitButton
-                // disabled={!isFormValid}
+                disabled={!isFormValid || isReadOnly}
                 onSubmit={onSubmit}
                 text={'Войти'}
               />
@@ -86,7 +105,13 @@ export default function Login() {
                   Регистрация
                 </Link>
               </p>
-              <p className='login__error-message'>Тут API ошибки авторизации</p>
+              <p
+                className={`login__error-message ${
+                  apiError && 'login__error-message_active'
+                }`}
+              >
+                {apiError}
+              </p>
             </div>
           </form>
         </div>

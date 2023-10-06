@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './MoviesCard.css';
+import { API_IMAGE_URL } from '../../utils/constants';
 
 export default function MoviesCard({
   id,
@@ -8,12 +9,24 @@ export default function MoviesCard({
   title,
   duration,
   trailerLink,
-  handleSaveMovie,
-  handleRemoveMovie,
+  onSaveMovie,
+  onRemoveMovie,
+  savedMoviesArr,
 }) {
   const [isSavedMovie, setIsSavedMovie] = useState(false);
   const location = useLocation();
   const moviePage = location.pathname === '/movies';
+
+  //проверка фильм на сохраненный
+  useEffect(() => {
+    if (savedMoviesArr) {
+      if (savedMoviesArr.some((movie) => movie.movieId === id)) {
+        setIsSavedMovie(true);
+      } else {
+        setIsSavedMovie(false);
+      }
+    }
+  }, [savedMoviesArr]);
 
   const durationFormat = () => {
     const hours = Math.floor(duration / 60);
@@ -21,27 +34,13 @@ export default function MoviesCard({
     return `${hours}ч ${minutes}м`;
   };
 
-  const onSaveMovie = () => {
-    moviePage && setIsSavedMovie(true);
-    handleSaveMovie(id);
+  const handleSaveMovie = () => {
+    onSaveMovie(id);
   };
 
-  const onRemoveMovie = (e) => {
-    moviePage && setIsSavedMovie(false);
-    handleRemoveMovie(id);
+  const handleRemoveMovie = (e) => {
+    onRemoveMovie(id);
   };
-
-  useEffect(() => {
-    if (
-      localStorage.savedMovies &&
-      JSON.parse(localStorage.savedMovies).length > 0
-    ) {
-      let moviesArr = JSON.parse(localStorage.savedMovies);
-      setIsSavedMovie(moviesArr.some((item) => {
-          return item._id === id;
-        }))
-    }
-  });
 
   return (
     <li className='movies-card'>
@@ -51,7 +50,11 @@ export default function MoviesCard({
         href={trailerLink}
         rel='noreferrer'
       >
-        <img className='movies-card__image' src={thumbnail} alt={title} />
+        <img
+          className='movies-card__image'
+          src={`${moviePage ? API_IMAGE_URL + thumbnail : thumbnail}`}
+          alt={title}
+        />
       </a>
       <div className='movies-card__content-wrapper'>
         <h2 className='movies-card__title'>{title}</h2>
@@ -68,9 +71,9 @@ export default function MoviesCard({
           onClick={
             moviePage
               ? isSavedMovie
-                ? onRemoveMovie
-                : onSaveMovie
-              : onRemoveMovie
+                ? handleRemoveMovie
+                : handleSaveMovie
+              : handleRemoveMovie
           }
         ></button>
       </div>

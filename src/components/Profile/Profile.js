@@ -1,36 +1,79 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import Header from '../Header/Header';
 import './Profile.css';
 import SubmitButton from '../Buttons/SubmitButton/SubmitButton';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
-export default function Profile({ loggedIn }) {
-  const [isEditActive, setisEditActive] = useState(false);
+export default function Profile({
+  loggedIn,
+  onSignOut,
+  onEditProfile,
+  apiError,
+  clearApiError,
+  onEditActive,
+  isEditActive,
+  isReadOnly,
+}) {
+  const currentUser = useContext(CurrentUserContext);
   const [profile, setProfile] = useState({ name: '', email: '' });
   const [profileError, setProfileError] = useState({ name: '', email: '' });
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isButtonActive, setIsButtonActive] = useState(false);
+
+  useEffect(() => {
+    setProfile({
+      name: currentUser.name,
+      email: currentUser.email,
+    });
+  }, [currentUser]);
+
+  useEffect(() => {
+    let isMatches =
+      currentUser.name !== profile.name || currentUser.email !== profile.email;
+    setIsButtonActive(isMatches);
+  }, [profile, currentUser, isFormValid]);
 
   function onChange(e) {
     setProfile({ ...profile, [e.target.name]: e.target.value });
 
-    setProfileError({
-      ...profileError,
-      [e.target.name]: e.target.validationMessage,
-    });
+    if (
+      e.target.name === 'name' &&
+      e.target.validationMessage === 'Введите данные в указанном формате.'
+    ) {
+      setProfileError({
+        ...profileError,
+        name: 'Поле содержит только латиницу, кириллицу, пробел или дефис.',
+      });
+    } else if (
+      e.target.name === 'email' &&
+      e.target.validationMessage === 'Введите данные в указанном формате.'
+    ) {
+      setProfileError({
+        ...profileError,
+        email: 'Введите email в формате example@ya.ru',
+      });
+    } else {
+      setProfileError({
+        ...profileError,
+        [e.target.name]: e.target.validationMessage,
+      });
+    }
 
     setIsFormValid(e.target.closest('form').checkValidity());
+    clearApiError();
   }
 
   function onEdit() {
-    setisEditActive(true);
+    onEditActive();
   }
 
   function onSubmit(e) {
     e.preventDefault();
-    setisEditActive(false);
+    onEditProfile(profile);
   }
 
-  function handleExit() {
-    console.log('logout');
+  function handleSignOut() {
+    onSignOut();
   }
 
   return (
@@ -38,7 +81,7 @@ export default function Profile({ loggedIn }) {
       <Header loggedIn={loggedIn} />
       <main className='main'>
         <section className='profile'>
-          <h1 className='profile__title'>Привет, Виталий</h1>
+          <h1 className='profile__title'>Привет, {profile.name}!</h1>
           <form className='profile__form' name='profile'>
             <div className='profile__inputs-wrapper'>
               <label className='profile__input-wrapper'>
@@ -52,9 +95,11 @@ export default function Profile({ loggedIn }) {
                   type='text'
                   minLength='2'
                   maxLength='30'
-                  value={profile.name}
+                  pattern={'^[а-яА-ЯёЁa-zA-Z\\s\\-]+$'}
+                  value={profile.name || ''}
                   onChange={onChange}
                   disabled={!isEditActive}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
@@ -70,9 +115,10 @@ export default function Profile({ loggedIn }) {
                   name='email'
                   type='email'
                   pattern={'^.+@.+\\..{2,}$'}
-                  value={profile.email}
+                  value={profile.email || ''}
                   onChange={onChange}
                   disabled={!isEditActive}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
@@ -81,7 +127,7 @@ export default function Profile({ loggedIn }) {
             <div className='profile__buttons-wrapper'>
               {isEditActive ? (
                 <SubmitButton
-                  // disabled={!isFormValid}
+                  disabled={!isFormValid || !isButtonActive || isReadOnly}
                   onSubmit={onSubmit}
                   text={'Сохранить'}
                 />
@@ -97,14 +143,18 @@ export default function Profile({ loggedIn }) {
                   <button
                     type='button'
                     className='profile__button profile__button_exit btn-link'
-                    onClick={handleExit}
+                    onClick={handleSignOut}
                   >
                     Выйти из аккаунта
                   </button>
                 </>
               )}
-              <p className='profile__error-message'>
-                Тут ошибки сохранения
+              <p
+                className={`profile__error-message ${
+                  apiError && 'profile__error-message_active'
+                }`}
+              >
+                {apiError}
               </p>
             </div>
           </form>

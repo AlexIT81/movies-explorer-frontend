@@ -121,7 +121,13 @@
   line-height: normal;
   text-align: center;
   transform: translateX(-50%);
+  visibility: hidden;
 }
+
+.login__error-message_active {
+  visibility: visible;
+}
+
 
 .login__paragraph {
   margin: 0;

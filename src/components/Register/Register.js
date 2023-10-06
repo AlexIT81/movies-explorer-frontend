@@ -4,7 +4,12 @@ import Logo from '../Logo/Logo';
 import { Link } from 'react-router-dom';
 import SubmitButton from '../Buttons/SubmitButton/SubmitButton';
 
-export default function Register() {
+export default function Register({
+  onRegister,
+  apiError,
+  clearApiError,
+  isReadOnly,
+}) {
   const [register, setregister] = useState({
     name: '',
     email: '',
@@ -20,16 +25,36 @@ export default function Register() {
   function onChange(e) {
     setregister({ ...register, [e.target.name]: e.target.value });
 
-    setRegisterError({
-      ...registerError,
-      [e.target.name]: e.target.validationMessage,
-    });
+    if (
+      e.target.name === 'name' &&
+      e.target.validationMessage === 'Введите данные в указанном формате.'
+    ) {
+      setRegisterError({
+        ...registerError,
+        name: 'Поле содержит только латиницу, кириллицу, пробел или дефис.',
+      });
+    } else if (
+      e.target.name === 'email' &&
+      e.target.validationMessage === 'Введите данные в указанном формате.'
+    ) {
+      setRegisterError({
+        ...registerError,
+        email: 'Введите email в формате example@ya.ru',
+      });
+    } else {
+      setRegisterError({
+        ...registerError,
+        [e.target.name]: e.target.validationMessage,
+      });
+    }
 
     setIsFormValid(e.target.closest('form').checkValidity());
+    clearApiError();
   }
 
   function onSubmit(e) {
     e.preventDefault();
+    onRegister(register);
   }
 
   return (
@@ -53,8 +78,10 @@ export default function Register() {
                   type='text'
                   minLength='2'
                   maxLength='30'
+                  pattern={'^[а-яА-ЯёЁa-zA-Z\\s\\-]+$'}
                   value={register.name}
                   onChange={onChange}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
@@ -71,6 +98,7 @@ export default function Register() {
                   pattern={'^.+@.+\\..{2,}$'}
                   value={register.email}
                   onChange={onChange}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
@@ -88,14 +116,15 @@ export default function Register() {
                   maxLength='30'
                   value={register.password}
                   onChange={onChange}
+                  readOnly={isReadOnly}
                   required
                 />
               </label>
               <p className='register__input-error'>{registerError.password}</p>
             </div>
             <div className='register__buttons-wrapper'>
-               <SubmitButton
-                // disabled={!isFormValid}
+              <SubmitButton
+                disabled={!isFormValid || isReadOnly}
                 onSubmit={onSubmit}
                 text={'Зарегистрироваться'}
               />
@@ -105,8 +134,12 @@ export default function Register() {
                   Войти
                 </Link>
               </p>
-              <p className='register__error-message'>
-                Тут API ошибки регистрации
+              <p
+                className={`register__error-message ${
+                  apiError && 'register__error-message_active'
+                }`}
+              >
+                {apiError}
               </p>
             </div>
           </form>

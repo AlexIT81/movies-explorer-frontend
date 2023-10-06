@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import WindowSize from '../hooks/WindowSize';
+import WindowSize from '../hooks/useWindowSize';
 import MenuStart from '../MenuStart/MenuStart';
 import MenuUser from '../MenuUser/MenuUser';
 import BtnAccount from '../Buttons/AccountButton/AccountButton';

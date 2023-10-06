@@ -6,14 +6,14 @@ export default function MenuStart() {
     <nav>
       <ul className='menu-start'>
         <li className='menu-start__item'>
-          <Link className='menu-start__link text-link' to='register'>
+          <Link className='menu-start__link text-link' to='/register'>
             Регистрация
           </Link>
         </li>
         <li className='menu-start__item'>
           <Link
             className='menu-start__link menu-start__link_big text-link'
-            to='login'
+            to='/login'
           >
             Войти
           </Link>

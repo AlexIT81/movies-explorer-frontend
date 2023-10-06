@@ -2,70 +2,82 @@ import SearchForm from '../SearchForm/SearchForm';
 import './SavedMovies.css';
 import { useState, useEffect } from 'react';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
+import * as mainApi from '../../utils/MainApi';
+import { SHORT_FILM_MAX_DURATION } from '../../utils/constants';
 
-export default function SavedMovies() {
+export default function SavedMovies({ setErrorPopup }) {
   const [isEmptySavedMovies, setIsemptySavedMovies] = useState(true);
   const [savedMoviesArr, setSavedMoviesArr] = useState([]);
-  const [isFilterCheckboxChecked, setIsFilterCheckboxChecked] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [moviesForShow, setMoviesForShow] = useState([]);
 
   useEffect(() => {
-    if (localStorage.savedMovies) {
-      setSavedMoviesArr(JSON.parse(localStorage.savedMovies));
-      setIsemptySavedMovies(false);
-    } else {
-      setSavedMoviesArr([]);
-      setIsemptySavedMovies(true);
-    }
+    mainApi
+      .checkSavedMovies()
+      .then((res) => {
+        setSavedMoviesArr(res.data);
+        setMoviesForShow(res.data);
+        setIsemptySavedMovies(false);
+      })
+      .catch(() =>
+        setErrorPopup('Ошибка API получения сохраненных фильмов из БД!')
+      );
   }, []);
 
-  function handleRemoveMovie(movieId) {
-    let savedMoviesArr = JSON.parse(localStorage.savedMovies);
-    let newSavedMoviesArr = savedMoviesArr.filter(
-      (item) => item._id !== movieId
-    );
-    localStorage.removeItem('savedMovies');
-    setSavedMoviesArr(newSavedMoviesArr);
-    if (newSavedMoviesArr.length > 0) {
-      localStorage.setItem('savedMovies', JSON.stringify(newSavedMoviesArr));
+  useEffect(() => {
+    if (savedMoviesArr.length > 0) {
+      setIsemptySavedMovies(false);
     } else {
-      setSavedMoviesArr([]);
       setIsemptySavedMovies(true);
+    }
+
+    setMoviesForShow(savedMoviesArr);
+  }, [savedMoviesArr]);
+
+  //поиск
+  function handleSearch(query, short) {
+    if (query && short) {
+      let filteredMovies = savedMoviesArr.filter(
+        (movie) =>
+          (movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
+            movie.nameEN.toLowerCase().includes(query.toLowerCase())) &&
+          movie.duration <= SHORT_FILM_MAX_DURATION
+      );
+      setMoviesForShow(filteredMovies);
+    } else if (query) {
+      let filteredMovies = savedMoviesArr.filter(
+        (movie) =>
+          movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
+          movie.nameEN.toLowerCase().includes(query.toLowerCase())
+      );
+      setMoviesForShow(filteredMovies);
+    } else if (short) {
+      let filteredMovies = savedMoviesArr.filter((movie) => movie.duration <= SHORT_FILM_MAX_DURATION);
+      setMoviesForShow(filteredMovies);
+    } else {
+      setMoviesForShow(savedMoviesArr);
     }
   }
 
-  //клик по короткометражкам отправляем в другой компонент стейт
-  function handleFilterCheckbox() {
-    setIsFilterCheckboxChecked(!isFilterCheckboxChecked);
-  }
-
-  //поиск
-  function handleSearch(query) {
-    setSearchQuery(query);
+  //удаление фильма
+  function handleRemoveSavedMovie(movieId) {
+    return mainApi
+      .removeMovie(movieId)
+      .then((res) => {
+        setSavedMoviesArr(
+          savedMoviesArr.filter((movie) => movie._id !== movieId)
+        );
+      })
+      .catch(() => setErrorPopup('Ошибка API удаления фильма из БД!'));
   }
 
   return (
     <>
-      <SearchForm
-        handleSearch={handleSearch}
-        handleFilterCheckbox={handleFilterCheckbox}
-        isFilterCheckboxChecked={isFilterCheckboxChecked}
+      <SearchForm onSearch={handleSearch} />
+      <MoviesCardList
+        moviesForShow={moviesForShow}
+        onRemoveSavedMovie={handleRemoveSavedMovie}
+        isEmptySavedMovies={isEmptySavedMovies}
       />
-      {/* {isLoading ? <Preloader /> : <MoviesCardList movies={savedMoviesArr} isEmptySavedMovies={isEmptySavedMovies} handleRemoveMovie={handleRemoveMovie} />} */}
-      {!isEmptySavedMovies ? (
-        <MoviesCardList
-          searchQuery={searchQuery}
-          isFilterCheckboxChecked={isFilterCheckboxChecked}
-          movies={savedMoviesArr}
-          handleRemoveMovie={handleRemoveMovie}
-        />
-      ) : (
-        <section className='movies-card-list'>
-          <h1 className='movies-card-list__empty-search'>
-            Нету сохраненных фильмов!
-          </h1>
-        </section>
-      )}
     </>
   );
 }

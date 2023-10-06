@@ -3,83 +3,176 @@ import Preloader from '../Preloader/Preloader';
 import './Movies.css';
 import { useState, useEffect } from 'react';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
-import { initialMovies } from '../../utils/constants';
+import {
+  FULL_SCREEN_DATA,
+  MEDIUM_SCREEN_DATA,
+  SMALL_SCREEN_DATA,
+  SHORT_FILM_MAX_DURATION
+} from '../../utils/constants';
+import useWindowSize from '../hooks/useWindowSize';
+import * as mainApi from '../../utils/MainApi';
+import { API_IMAGE_URL } from '../../utils/constants';
 
-export default function Movies() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isFilterCheckboxChecked, setIsFilterCheckboxChecked] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+export default function Movies({
+  movies,
+  isLoading,
+  beatfilmApiError,
+  setErrorPopup,
+}) {
+  const [savedMoviesArr, setSavedMoviesArr] = useState([]);
 
-  //просто чтобы было понятно что прелоадер есть и стилизован
+  const windowWidth = useWindowSize();
+  const [moviesForShow, setMoviesForShow] = useState([]);
+  const [quantityForShow, setQuantityForShow] = useState(getStartQuantity());
+  const [additionalQuantity, setAdditionalQuantity] = useState(
+    getAdditionalQuantity()
+  );
+  const [isMoreMoviesButtonShow, setIsMoreMoviesButtonShow] = useState(
+    isMoreMoviesButtonActive()
+  );
+
+  //достаем фильмы из ЛС для отрисовки
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
+    if (localStorage.movies) {
+      const savedMovies = JSON.parse(localStorage.movies);
+      setMoviesForShow(savedMovies);
+    }
   }, []);
 
-  //при перезагрузки обновляем searchQuery если есть и короткометражки
+  // проверяем есть ли сохраненные фильмы при монтировании
   useEffect(() => {
-    if (localStorage.searchQuery) {
-      setSearchQuery(JSON.parse(localStorage.searchQuery));
-    }
-    if (localStorage.shortMovies) {
-      setIsFilterCheckboxChecked(JSON.parse(localStorage.shortMovies));
-    }
+    mainApi
+      .checkSavedMovies()
+      .then((res) => setSavedMoviesArr(res.data))
+      .catch(() => setErrorPopup('Ошибка API получения фильмов из БД!'));
   }, []);
 
-  //сохранить
+  //сохранить фильм
   function handleSaveMovie(movieId) {
-    let savedMoviesArr = [];
-    if (localStorage.savedMovies) {
-      savedMoviesArr = JSON.parse(localStorage.savedMovies);
-    }
-    let newMovie = initialMovies.find((item) => item._id === movieId);
-    savedMoviesArr = [...savedMoviesArr, newMovie];
-    localStorage.setItem('savedMovies', JSON.stringify(savedMoviesArr));
+    let savedMovie = movies.filter((movie) => movie.id === movieId)[0];
+    savedMovie.img = API_IMAGE_URL + savedMovie.image.url;
+    return mainApi
+      .saveMovie(
+        savedMovie.country,
+        savedMovie.director,
+        savedMovie.duration,
+        savedMovie.year,
+        savedMovie.description,
+        savedMovie.img,
+        savedMovie.trailerLink,
+        savedMovie.nameRU,
+        savedMovie.nameEN,
+        savedMovie.img,
+        savedMovie.id
+      )
+      .then((res) => {
+        setSavedMoviesArr([...savedMoviesArr, res.data]);
+      })
+      .catch(() => setErrorPopup('Ошибка API сохранения фильма в БД!'));
   }
 
-  //удалить
+  //удалить фильм
   function handleRemoveMovie(movieId) {
-    let savedMoviesArr = JSON.parse(localStorage.savedMovies);
-    let newSavedMoviesArr = savedMoviesArr.filter(
-      (item) => item._id !== movieId
-    );
-    localStorage.removeItem('savedMovies');
-    localStorage.setItem('savedMovies', JSON.stringify(newSavedMoviesArr));
-  }
-
-  //клик по короткометражкам отправляем в другой компонент стейт
-  function handleFilterCheckbox() {
-    localStorage.setItem(
-      'shortMovies',
-      JSON.stringify(!isFilterCheckboxChecked)
-    );
-    setIsFilterCheckboxChecked(!isFilterCheckboxChecked);
+    let removedMovie = savedMoviesArr.filter(
+      (movie) => movie.movieId === movieId
+    )[0];
+    return mainApi
+      .removeMovie(removedMovie._id)
+      .then((res) => {
+        setSavedMoviesArr(
+          savedMoviesArr.filter((movie) => movie.movieId !== movieId)
+        );
+      })
+      .catch(() => setErrorPopup('Ошибка API удаления фильма из БД!'));
   }
 
   //поиск
-  function handleSearch(query) {
-    setSearchQuery(query);
-    localStorage.setItem('searchQuery', JSON.stringify(query));
+  function handleSearch(query, short) {
+    if (query && short) {
+      let filteredMovies = movies.filter(
+        (movie) =>
+          (movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
+            movie.nameEN.toLowerCase().includes(query.toLowerCase())) &&
+          movie.duration <= SHORT_FILM_MAX_DURATION
+      );
+      setMoviesForShow(filteredMovies);
+      localStorage.setItem('movies', JSON.stringify(filteredMovies));
+    } else if (query) {
+      let filteredMovies = movies.filter(
+        (movie) =>
+          movie.nameRU.toLowerCase().includes(query.toLowerCase()) ||
+          movie.nameEN.toLowerCase().includes(query.toLowerCase())
+      );
+      setMoviesForShow(filteredMovies);
+      localStorage.setItem('movies', JSON.stringify(filteredMovies));
+    }
+    localStorage.setItem('searchQuery', JSON.stringify(query.toString()));
+    localStorage.setItem('shortMovies', JSON.stringify(short));
   }
+
+  // начальное количество фильмов
+  function getStartQuantity() {
+    if (windowWidth < MEDIUM_SCREEN_DATA.width) {
+      return SMALL_SCREEN_DATA.shownQty;
+    } else if (windowWidth < FULL_SCREEN_DATA.width && windowWidth >= MEDIUM_SCREEN_DATA.width) {
+      return MEDIUM_SCREEN_DATA.shownQty;
+    } else {
+      return FULL_SCREEN_DATA.shownQty;
+    }
+  }
+
+  // сколько показыаем дополнительно
+  function getAdditionalQuantity() {
+    if (windowWidth < MEDIUM_SCREEN_DATA.width) {
+      return SMALL_SCREEN_DATA.addQty;
+    } else if (windowWidth < FULL_SCREEN_DATA.width && windowWidth >= MEDIUM_SCREEN_DATA.width) {
+      return MEDIUM_SCREEN_DATA.addQty;
+    } else {
+      return FULL_SCREEN_DATA.addQty;
+    }
+  }
+
+  //кнопка Ещё
+  function isMoreMoviesButtonActive() {
+    return moviesForShow.length > quantityForShow;
+  }
+
+  function addMoreMovies() {
+    setQuantityForShow((prev) => prev + additionalQuantity);
+  }
+
+  useEffect(() => {
+    setQuantityForShow(getStartQuantity());
+    setAdditionalQuantity(getAdditionalQuantity());
+  }, [windowWidth]);
+
+  useEffect(() => {
+    if (moviesForShow.length <= quantityForShow) {
+      setIsMoreMoviesButtonShow(false);
+    } else {
+      setIsMoreMoviesButtonShow(true);
+    }
+  }, [quantityForShow, moviesForShow.length]);
 
   return (
     <>
       <SearchForm
-        handleSearch={handleSearch}
-        handleFilterCheckbox={handleFilterCheckbox}
-        isFilterCheckboxChecked={isFilterCheckboxChecked}
+        onSearch={handleSearch}
+        isLoading={isLoading}
       />
       {isLoading ? (
         <Preloader />
       ) : (
         <MoviesCardList
-          searchQuery={searchQuery}
-          isFilterCheckboxChecked={isFilterCheckboxChecked}
-          movies={initialMovies}
-          handleSaveMovie={handleSaveMovie}
-          handleRemoveMovie={handleRemoveMovie}
+          onSaveMovie={handleSaveMovie}
+          onRemoveMovie={handleRemoveMovie}
+          isMoreMoviesButtonShow={isMoreMoviesButtonShow}
+          moviesForShow={moviesForShow.filter(
+            (item, index) => index < quantityForShow
+          )}
+          addMoreMovies={addMoreMovies}
+          savedMoviesArr={savedMoviesArr}
+          beatfilmApiError={beatfilmApiError}
         />
       )}
     </>

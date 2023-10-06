@@ -31,12 +31,20 @@
   background: url(../../images/filter_checkbox_true.svg) center no-repeat;
 }
 
+.filter-checkbox__input_disabled+label::before, .filter-checkbox__input_disabled+label::before {
+  cursor:default;
+}
+
 .filter-checkbox__name {
   margin: 0;
   font-weight: 400;
   font-size: 12px;
   line-height: 18px;
   cursor: pointer;
+}
+
+.filter-checkbox__name_disabled {
+  cursor: default;
 }
 
 @media (max-width: 767px) {

@@ -53,8 +53,9 @@
   cursor: pointer;
 }
 
-.search__button_disabled {
+.search__button_disabled:hover {
   cursor:default;
+  opacity: 1;
 }
 
 .search__hr {
