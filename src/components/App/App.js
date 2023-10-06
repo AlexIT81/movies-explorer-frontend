@@ -127,6 +127,11 @@ function App() {
     setisEditActive(!isEditActive);
   }
 
+  //ушли со странице, скинули редактирование
+  useEffect(() => {
+    if (isEditActive) setisEditActive(false);
+  }, [location.pathname]);
+
   //заполняем стейт фильмами со сторонненго api
   useEffect(() => {
     setIsLoading(true);
