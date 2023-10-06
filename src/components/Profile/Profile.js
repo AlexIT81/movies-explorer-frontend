@@ -81,7 +81,7 @@ export default function Profile({
       <Header loggedIn={loggedIn} />
       <main className='main'>
         <section className='profile'>
-          <h1 className='profile__title'>Привет, Виталий</h1>
+          <h1 className='profile__title'>Привет, {profile.name}!</h1>
           <form className='profile__form' name='profile'>
             <div className='profile__inputs-wrapper'>
               <label className='profile__input-wrapper'>
